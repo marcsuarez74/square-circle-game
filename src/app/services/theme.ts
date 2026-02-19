@@ -2,26 +2,26 @@ import { Injectable, signal, effect, computed } from '@angular/core';
 import { SeasonalTheme, themes, ThemeDefinition } from './theme-definitions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeService {
   private readonly STORAGE_KEY_MODE = 'square-circle-theme-mode';
   private readonly STORAGE_KEY_SEASONAL = 'square-circle-theme-seasonal';
-  
+
   readonly isDark = signal<boolean>(true);
   readonly seasonalTheme = signal<SeasonalTheme>('default');
   readonly currentTheme = computed(() => themes[this.seasonalTheme()]);
-  
+
   readonly availableThemes = Object.values(themes);
 
   constructor() {
     // Load saved preferences
     const savedMode = localStorage.getItem(this.STORAGE_KEY_MODE);
     const savedSeasonal = localStorage.getItem(this.STORAGE_KEY_SEASONAL) as SeasonalTheme;
-    
+
     const prefersDark = savedMode !== null ? savedMode === 'dark' : true;
     this.isDark.set(prefersDark);
-    
+
     if (savedSeasonal && themes[savedSeasonal]) {
       this.seasonalTheme.set(savedSeasonal);
     }
@@ -37,7 +37,7 @@ export class ThemeService {
   }
 
   toggle(): void {
-    this.isDark.update(dark => !dark);
+    this.isDark.update((dark) => !dark);
   }
 
   setDark(dark: boolean): void {
@@ -51,15 +51,15 @@ export class ThemeService {
   private applyTheme(dark: boolean, seasonalTheme: SeasonalTheme): void {
     const body = document.body;
     const theme = themes[seasonalTheme];
-    
+
     // Remove all seasonal theme classes
-    Object.keys(themes).forEach(t => {
+    Object.keys(themes).forEach((t) => {
       body.classList.remove(`theme-${t}`);
     });
-    
+
     // Add current seasonal theme class
     body.classList.add(`theme-${seasonalTheme}`);
-    
+
     // When using a seasonal theme (not default), we don't need dark/light classes
     // because the theme defines all colors
     if (seasonalTheme === 'default') {
@@ -75,7 +75,7 @@ export class ThemeService {
       // Remove dark/light classes for seasonal themes
       body.classList.remove('dark', 'light');
     }
-    
+
     // Apply CSS custom properties (only for seasonal themes)
     if (seasonalTheme !== 'default') {
       this.applyThemeColors(theme);
@@ -87,7 +87,7 @@ export class ThemeService {
 
   private applyThemeColors(theme: ThemeDefinition): void {
     const root = document.documentElement;
-    
+
     root.style.setProperty('--bg-primary', theme.colors.bgPrimary);
     root.style.setProperty('--bg-secondary', theme.colors.bgSecondary);
     root.style.setProperty('--bg-tertiary', theme.colors.bgTertiary);
@@ -109,7 +109,7 @@ export class ThemeService {
 
   private resetThemeColors(): void {
     const root = document.documentElement;
-    
+
     // Remove inline styles to let CSS classes (.dark/.light) take over
     root.style.removeProperty('--bg-primary');
     root.style.removeProperty('--bg-secondary');

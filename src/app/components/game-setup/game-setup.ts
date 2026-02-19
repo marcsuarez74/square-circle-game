@@ -249,7 +249,7 @@ export class GameSetup {
     reader.onload = (e: any) => {
       try {
         const jsonContent = JSON.parse(e.target.result);
-        
+
         // Check if it's a valid exported game
         if (!jsonContent.gameState || !jsonContent.players) {
           this.showMessage('Fichier JSON invalide : structure incorrecte');
@@ -269,7 +269,7 @@ export class GameSetup {
         if (jsonContent.players && jsonContent.players.length > 0) {
           const playersToAdd = jsonContent.players.map((p: any) => ({
             firstName: p.firstName,
-            lastName: p.lastName
+            lastName: p.lastName,
           }));
           this.playerService.addPlayers(playersToAdd);
         }
@@ -285,11 +285,12 @@ export class GameSetup {
           this.matchDurationMinutes = Math.ceil(jsonContent.gameState.remainingTime / 60);
         }
 
-        this.showMessage(`Partie chargée : ${jsonContent.players?.length || 0} joueurs, manche ${jsonContent.gameState?.currentSet || 1}`);
+        this.showMessage(
+          `Partie chargée : ${jsonContent.players?.length || 0} joueurs, manche ${jsonContent.gameState?.currentSet || 1}`,
+        );
         this.selectedJsonFile = null;
-
       } catch (error) {
-        this.showMessage('Erreur lors de l\'import du fichier JSON');
+        this.showMessage("Erreur lors de l'import du fichier JSON");
         console.error(error);
       }
     };

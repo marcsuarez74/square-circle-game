@@ -1,9 +1,11 @@
 /* Spring - 3 flowers falling gently */
 body.theme-spring::before {
   background-image:
-    /* White daisy */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 35 35'%3E%3Cg fill='white'%3E%3Cellipse cx='15' cy='7' rx='4' ry='6'/%3E%3Cellipse cx='15' cy='23' rx='4' ry='6'/%3E%3Cellipse cx='7' cy='15' rx='6' ry='4'/%3E%3Cellipse cx='23' cy='15' rx='6' ry='4'/%3E%3C/g%3E%3Ccircle cx='15' cy='15' r='4' fill='%23fbbf24'/%3E%3C/svg%3E");
-  background-size: 40px 40px, 32px 32px, 26px 35px;
+    /* White daisy */ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 35 35'%3E%3Cg fill='white'%3E%3Cellipse cx='15' cy='7' rx='4' ry='6'/%3E%3Cellipse cx='15' cy='23' rx='4' ry='6'/%3E%3Cellipse cx='7' cy='15' rx='6' ry='4'/%3E%3Cellipse cx='23' cy='15' rx='6' ry='4'/%3E%3C/g%3E%3Ccircle cx='15' cy='15' r='4' fill='%23fbbf24'/%3E%3C/svg%3E");
+  background-size:
+    40px 40px,
+    32px 32px,
+    26px 35px;
   background-position:
     20% -80px,
     50% -250px,

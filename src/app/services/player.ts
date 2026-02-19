@@ -9,7 +9,7 @@ export class PlayerService {
   private players: Player[] = [];
   private playersSubject = new BehaviorSubject<Player[]>([]);
   private nextNumber = 1;
-  
+
   // Track player encounters to avoid repetitions
   private playerEncounters: Map<string, Set<string>> = new Map();
 
@@ -50,7 +50,7 @@ export class PlayerService {
     }));
 
     this.players = [...this.players, ...newPlayers];
-    newPlayers.forEach(p => this.playerEncounters.set(p.id, new Set()));
+    newPlayers.forEach((p) => this.playerEncounters.set(p.id, new Set()));
     this.playersSubject.next([...this.players]);
   }
 
@@ -68,7 +68,7 @@ export class PlayerService {
   }
 
   updatePlayerStats(playerId: string, won: boolean, teamScore: number): void {
-    const player = this.players.find(p => p.id === playerId);
+    const player = this.players.find((p) => p.id === playerId);
     if (player) {
       player.matchesPlayed++;
       if (won) {

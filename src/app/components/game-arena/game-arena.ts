@@ -34,7 +34,7 @@ import { ConfirmDialog, ConfirmDialogData } from '../confirm-dialog/confirm-dial
     MatFormFieldModule,
     MatBadgeModule,
     MatTooltipModule,
-    RankingPanel
+    RankingPanel,
   ],
   templateUrl: './game-arena.html',
   styleUrl: './game-arena.scss',
@@ -102,7 +102,7 @@ export class GameArena implements OnInit, OnDestroy {
     const state = this.gameState();
     if (!state) return;
 
-    state.courts.forEach(court => {
+    state.courts.forEach((court) => {
       const scores = this.matchScores();
       if (!scores[court.id]) {
         this.store.updateScore(court.id, 'team1', 0);
@@ -191,11 +191,7 @@ export class GameArena implements OnInit, OnDestroy {
           const won = isTeam1 ? team1Won : !team1Won;
           const teamScore = isTeam1 ? score.team1 : score.team2;
 
-          this.store.updatePlayerStats(
-            player.id,
-            won,
-            teamScore
-          );
+          this.store.updatePlayerStats(player.id, won, teamScore);
         });
       }
     });
@@ -205,14 +201,10 @@ export class GameArena implements OnInit, OnDestroy {
     const state = this.gameState();
     if (!state) return false;
 
-    const allPlayers = [
-      ...state.courts.flatMap(c => c.players),
-      ...state.waitingQueue
-    ];
+    const allPlayers = [...state.courts.flatMap((c) => c.players), ...state.waitingQueue];
 
-    return allPlayers.some(p =>
-      p.id !== playerId &&
-      p.firstName.toLowerCase() === firstName.toLowerCase()
+    return allPlayers.some(
+      (p) => p.id !== playerId && p.firstName.toLowerCase() === firstName.toLowerCase(),
     );
   }
 
@@ -225,7 +217,7 @@ export class GameArena implements OnInit, OnDestroy {
   }
 
   toggleRankingPanel(): void {
-    this.isRankingPanelVisible.update(visible => !visible);
+    this.isRankingPanelVisible.update((visible) => !visible);
   }
 
   hideRankingPanel(): void {
