@@ -5,7 +5,7 @@ import { GameConfig } from '../models/game-config.model';
 import { GameState } from '../models/game-state.model';
 import { Player } from '../models/player.model';
 import { PlayerService } from './player';
-import { GameStore } from './game-store';
+import { GameStore } from './game-storage';
 import { inject } from '@angular/core';
 
 @Injectable({
