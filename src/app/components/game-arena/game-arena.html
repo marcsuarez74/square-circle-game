@@ -1,41 +1,52 @@
-@if (gameState(); as state) {
+@if (gameState()) {
   <div class="arena-container">
+    <!-- Ranking Panel Component -->
+    <app-ranking-panel 
+      [isVisible]="isRankingPanelVisible()"
+      (close)="hideRankingPanel()"
+      (export)="showMessage('Partie exportée !')">
+    </app-ranking-panel>
+    
+    <!-- Trigger Button for Ranking Panel -->
+    <button 
+      class="ranking-trigger-btn" 
+      (click)="toggleRankingPanel()"
+      [class.active]="isRankingPanelVisible()"
+      *ngIf="!isRankingPanelVisible()">
+      <mat-icon>emoji_events</mat-icon>
+    </button>
+
     <!-- Header avec timer et contrôles -->
     <div class="arena-header">
       <div class="header-left">
-        <button
-          mat-icon-button
-          class="back-btn"
-          (click)="backToSetup()"
-          matTooltip="Retour à la configuration"
-        >
+        <button mat-icon-button 
+                class="back-btn"
+                (click)="backToSetup()"
+                matTooltip="Retour à la configuration">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <h1>Ronde des Carrés - Manche {{ currentSet() }}</h1>
       </div>
-
+      
       <div class="timer-section">
-        <div
-          class="timer-display"
-          [class.running]="isTimerRunning() && remainingTime() > 60"
-          [class.warning]="
-            isTimerRunning() &&
-            remainingTime() <= 60 &&
-            remainingTime() > 30
-          "
-          [class.danger]="isTimerRunning() && remainingTime() <= 30"
-        >
+        <div class="timer-display"
+             [class.running]="isTimerRunning() && remainingTime() > 60"
+             [class.warning]="isTimerRunning() && remainingTime() <= 60 && remainingTime() > 30"
+             [class.danger]="isTimerRunning() && remainingTime() <= 30">
           {{ formatTime(remainingTime()) }}
         </div>
-
+        
         <div class="timer-controls">
           @if (!isTimerRunning()) {
-            <button mat-raised-button color="primary" (click)="startRound()">
+            <button mat-raised-button 
+                    color="primary" 
+                    (click)="startRound()">
               <mat-icon>play_arrow</mat-icon>
               Déclencher la manche
             </button>
           } @else {
-            <button mat-stroked-button (click)="stopRound()">
+            <button mat-stroked-button 
+                    (click)="stopRound()">
               <mat-icon>pause</mat-icon>
               Pause
             </button>
@@ -46,7 +57,7 @@
 
     <!-- Terrains -->
     <div class="courts-grid">
-      @for (court of state.courts; track court.id) {
+      @for (court of gameState()!.courts; track court.id) {
         <mat-card class="court-card">
           <mat-card-header>
             <mat-card-title>
@@ -54,7 +65,7 @@
               {{ court.name }}
             </mat-card-title>
           </mat-card-header>
-
+          
           <mat-card-content>
             <!-- Visualisation du terrain -->
             <div class="court-visual">
@@ -69,11 +80,11 @@
                     }
                   </div>
                 }
-
+                
                 @if (court.players.length >= 2) {
                   <div class="net"></div>
                 }
-
+                
                 @if (court.players.length === 4 || court.players.length === 2) {
                   <div class="team team-2">
                     @for (player of getTeams(court).team2; track player.id) {
@@ -91,26 +102,22 @@
             @if (court.players.length === 4 || court.players.length === 2) {
               <div class="score-section">
                 <div class="score-inputs">
-                  <mat-form-field appearance="outline" class="score-field">
+                   <mat-form-field appearance="outline" class="score-field">
                     <mat-label>Équipe 1</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      [value]="matchScores()[court.id]?.team1 || 0"
-                      (change)="updateScore(court.id, 'team1', +$any($event.target).value)"
-                    />
+                    <input matInput 
+                           type="number" 
+                           [value]="matchScores()[court.id]?.team1 || 0"
+                           (input)="onScoreInput(court.id, 'team1', $event)">
                   </mat-form-field>
 
                   <span class="vs">VS</span>
 
                   <mat-form-field appearance="outline" class="score-field">
                     <mat-label>Équipe 2</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      [value]="matchScores()[court.id]?.team2 || 0"
-                      (change)="updateScore(court.id, 'team2', +$any($event.target).value)"
-                    />
+                    <input matInput 
+                           type="number" 
+                           [value]="matchScores()[court.id]?.team2 || 0"
+                           (input)="onScoreInput(court.id, 'team2', $event)">
                   </mat-form-field>
                 </div>
               </div>
@@ -121,17 +128,17 @@
     </div>
 
     <!-- File d'attente -->
-    @if (state.waitingQueue.length > 0) {
+    @if (waitingPlayers().length > 0) {
       <mat-card class="waiting-card">
         <mat-card-header>
           <mat-card-title>
             <mat-icon>queue</mat-icon>
-            File d'attente ({{ state.waitingQueue.length }} joueurs)
+            File d'attente ({{ waitingPlayers().length }} joueurs)
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="waiting-players-list">
-            @for (player of state.waitingQueue; track player.id) {
+            @for (player of waitingPlayers(); track player.id) {
               <span class="waiting-player">
                 N°{{ player.number }} - {{ getPlayerDisplayName(player) }}
               </span>
@@ -157,21 +164,6 @@
         <mat-icon>flag</mat-icon>
         Terminer la partie
       </button>
-
-      <button 
-        mat-fab 
-        color="primary" 
-        class="ranking-toggle-btn"
-        (click)="toggleRankingPanel()"
-        matTooltip="Voir le classement">
-        <mat-icon>emoji_events</mat-icon>
-      </button>
     </div>
   </div>
-
-  <!-- Ranking Panel -->
-  <app-ranking-panel 
-    [isVisible]="isRankingPanelVisible()"
-    (close)="hideRankingPanel()">
-  </app-ranking-panel>
 }

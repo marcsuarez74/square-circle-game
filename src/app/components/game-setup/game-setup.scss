@@ -210,6 +210,33 @@
       font-size: 0.875rem;
     }
   }
+
+  // JSON Import specific styles
+  &.json-import {
+    margin-top: 12px;
+
+    .drop-zone {
+      &.json-zone {
+        border-color: var(--info);
+        background-color: rgba(59, 130, 246, 0.05);
+
+        &:hover {
+          border-color: var(--info);
+          background-color: rgba(59, 130, 246, 0.1);
+          box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+        &.dragging {
+          border-color: var(--info);
+          background-color: rgba(59, 130, 246, 0.15);
+        }
+
+        mat-icon {
+          color: var(--info);
+        }
+      }
+    }
+  }
 }
 
 .players-section {

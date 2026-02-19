@@ -29,33 +29,33 @@
       flex-direction: column;
       gap: 8px;
     }
-  }
 
-  .back-btn {
-    color: var(--text-secondary);
-    transition: all 0.2s ease;
+    .back-btn {
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
 
-    &:hover {
-      color: var(--accent-primary);
-      background-color: rgba(56, 189, 248, 0.1);
+      &:hover {
+        color: var(--accent-primary);
+        background-color: rgba(56, 189, 248, 0.1);
+      }
+
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
     }
 
-    mat-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
-    }
-  }
+    h1 {
+      color: var(--text-primary);
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.025em;
 
-  h1 {
-    color: var(--text-primary);
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: -0.025em;
-
-    @media (max-width: 640px) {
-      font-size: 1.25rem;
+      @media (max-width: 640px) {
+        font-size: 1.25rem;
+      }
     }
   }
 }
@@ -381,44 +381,6 @@
   }
 }
 
-.waiting-players {
-  text-align: center;
-  padding: 24px;
-  background-color: var(--bg-secondary);
-  border-radius: var(--border-radius-sm);
-  border: 1px dashed var(--border-color);
-
-  p {
-    color: var(--text-muted);
-    margin: 0 0 12px 0;
-    font-size: 0.9375rem;
-  }
-
-  .player-chips {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-
-    .player-chip {
-      padding: 8px 14px;
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      color: var(--text-primary);
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: all 0.2s ease;
-
-      &:hover {
-        border-color: var(--accent-primary);
-        color: var(--accent-primary);
-        transform: translateY(-2px);
-      }
-    }
-  }
-}
-
 .waiting-card {
   max-width: 1400px;
   margin: 0 auto 24px;
@@ -629,5 +591,47 @@
     .vs {
       font-size: 0.875rem;
     }
+  }
+}
+
+/* Ranking Panel Trigger Button */
+.ranking-trigger-btn {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  background-color: var(--accent-primary);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--accent-hover);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  &.active {
+    background-color: var(--accent-hover);
+  }
+
+  mat-icon {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ranking-trigger-btn {
+    width: 36px;
+    height: 36px;
   }
 }
