@@ -394,6 +394,23 @@ export class GameService {
     this.stateSubject.next({ ...this.state });
   }
 
+  restoreGameState(gameState: GameState): void {
+    // Restore the complete game state
+    this.state = {
+      ...gameState,
+      // Ensure we create new instances to avoid reference issues
+      courts: gameState.courts.map((court) => ({ ...court, players: [...court.players] })),
+      waitingQueue: [...gameState.waitingQueue],
+    };
+    this.stateSubject.next({ ...this.state });
+
+    // Restore config from game state
+    this.config = {
+      numberOfCourts: gameState.courts.length,
+      matchDuration: gameState.remainingTime || 900,
+    };
+  }
+
   resetGame(): void {
     this.stopTimer();
     this.state = {

@@ -62,6 +62,10 @@ export class GameSetup {
   // Timer presets
   timerPresets = [0.5, 3, 5, 10];
 
+  // Imported game data
+  private importedGameState: GameState | null = null;
+  private importedMatchScores: { [courtId: number]: { team1: number; team2: number } } | null = null;
+
   get isFormValid(): boolean {
     const players = this.playerService.getPlayers();
     return players.length >= 2 && !!this.matchDurationMinutes && this.matchDurationMinutes > 0;
@@ -285,6 +289,14 @@ export class GameSetup {
           this.matchDurationMinutes = Math.ceil(jsonContent.gameState.remainingTime / 60);
         }
 
+        // Store imported game state for restoration when starting
+        if (jsonContent.gameState) {
+          this.importedGameState = jsonContent.gameState as GameState;
+        }
+        if (jsonContent.matchScores) {
+          this.importedMatchScores = jsonContent.matchScores;
+        }
+
         this.showMessage(
           `Partie chargée : ${jsonContent.players?.length || 0} joueurs, manche ${jsonContent.gameState?.currentSet || 1}`,
         );
@@ -311,7 +323,33 @@ export class GameSetup {
       return;
     }
 
-    // Configure game service
+    // Check if we have imported game data to resume
+    if (this.importedGameState) {
+      // Restore game service state
+      this.gameService.restoreGameState(this.importedGameState);
+      
+      // Restore store state
+      this.store.setGameState(this.importedGameState);
+      this.store.setPlayers(players);
+      
+      // Restore match scores if available
+      if (this.importedMatchScores) {
+        Object.entries(this.importedMatchScores).forEach(([courtId, scores]) => {
+          this.store.updateScore(parseInt(courtId), 'team1', scores.team1);
+          this.store.updateScore(parseInt(courtId), 'team2', scores.team2);
+        });
+      }
+
+      // Clear imported data
+      this.importedGameState = null;
+      this.importedMatchScores = null;
+
+      this.showMessage('Partie restaurée !');
+      this.router.navigate(['/game']);
+      return;
+    }
+
+    // Configure game service for new game
     this.gameService.setConfig({
       numberOfCourts: this.numberOfCourts,
       matchDuration: this.matchDurationMinutes * 60,
