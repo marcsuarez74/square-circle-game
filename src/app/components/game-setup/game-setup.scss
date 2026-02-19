@@ -307,7 +307,9 @@
 
   .delete-btn {
     opacity: 0;
-    transition: opacity 0.2s ease, color 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      color 0.2s ease;
     color: var(--text-muted);
 
     &:hover {

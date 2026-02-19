@@ -39,7 +39,7 @@ export class GameService {
   getState$(): Observable<GameState> {
     return this.stateSubject.asObservable();
   }
-  
+
   getCurrentState(): GameState {
     return { ...this.state };
   }
@@ -67,21 +67,24 @@ export class GameService {
   assignPlayersToCourts(players: Player[]): void {
     // Assign players respecting singles/doubles rules
     const assignments = this.createBalancedAssignments(players);
-    
+
     this.state.courts = assignments.courts;
     this.state.waitingQueue = assignments.waitingQueue;
-    
+
     // Record encounters for each court (singles also record encounters)
-    this.state.courts.forEach(court => {
+    this.state.courts.forEach((court) => {
       if (court.players.length >= 2) {
         this.recordCourtEncounters(court);
       }
     });
-    
+
     this.stateSubject.next({ ...this.state });
   }
 
-  private createBalancedAssignments(players: Player[]): { courts: Court[]; waitingQueue: Player[] } {
+  private createBalancedAssignments(players: Player[]): {
+    courts: Court[];
+    waitingQueue: Player[];
+  } {
     const courts: Court[] = this.state.courts.map((court) => ({
       ...court,
       players: [],
@@ -102,7 +105,7 @@ export class GameService {
     // Remove 1 player to make it even if we can't fill all courts perfectly
     const numCourts = courts.length;
     const maxCapacity = numCourts * 4;
-    
+
     // If odd number and we have enough courts, put 1 in waiting queue
     if (totalPlayers % 2 === 1) {
       // Put the last player in waiting queue
@@ -113,16 +116,16 @@ export class GameService {
     // Now we have an even number of players
     // Strategy: Fill courts optimally (prioritize doubles, allow singles if needed)
     let remainingPlayers = availablePlayers.length;
-    
+
     for (let i = 0; i < numCourts && remainingPlayers > 0; i++) {
       const court = courts[i];
-      
+
       if (remainingPlayers >= 4) {
         // Enough for a double
         const team = this.selectBestTeam(availablePlayers, i + 1);
         if (team.length === 4) {
           court.players = team;
-          availablePlayers = availablePlayers.filter(p => !team.find(tp => tp.id === p.id));
+          availablePlayers = availablePlayers.filter((p) => !team.find((tp) => tp.id === p.id));
           remainingPlayers -= 4;
         } else {
           // Anti-repetition failed, take random 4
@@ -152,7 +155,7 @@ export class GameService {
         for (let k = j + 1; k < players.length - 1; k++) {
           for (let l = k + 1; l < players.length; l++) {
             const team = [players[i], players[j], players[k], players[l]];
-            
+
             if (this.isValidTeam(team, courtId)) {
               return team;
             }
@@ -160,7 +163,7 @@ export class GameService {
         }
       }
     }
-    
+
     return [];
   }
 
@@ -169,13 +172,13 @@ export class GameService {
     for (let i = 0; i < players.length - 1; i++) {
       for (let j = i + 1; j < players.length; j++) {
         const pair = [players[i], players[j]];
-        
+
         if (!this.playerService.havePlayedTogether(pair[0].id, pair[1].id)) {
           return pair;
         }
       }
     }
-    
+
     return [];
   }
 
@@ -214,10 +217,7 @@ export class GameService {
   }
 
   shufflePlayers(): void {
-    const allPlayers = [
-      ...this.state.courts.flatMap((c) => c.players),
-      ...this.state.waitingQueue,
-    ];
+    const allPlayers = [...this.state.courts.flatMap((c) => c.players), ...this.state.waitingQueue];
     this.assignPlayersToCourts(allPlayers);
   }
 

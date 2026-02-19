@@ -9,6 +9,7 @@ Application de gestion de tournoi de badminton en format "ronde des carrés" (je
 ## Fonctionnalités
 
 ### Configuration de la partie (Page 1)
+
 - **Ajout de joueurs** : Via formulaire manuel ou import Excel
 - **Import Excel** : Format avec colonnes "nom" et "prénom" (optionnel: "niveau")
 - **Configuration des terrains** : Choix du nombre de terrains (1-10)
@@ -16,6 +17,7 @@ Application de gestion de tournoi de badminton en format "ronde des carrés" (je
 - **Numérotation automatique** : Chaque joueur reçoit un numéro unique
 
 ### Gestion de la partie (Page 2)
+
 - **Visualisation des terrains** : Schéma visuel des terrains avec placement des joueurs
 - **Attribution automatique** : Distribution aléatoire des joueurs (4 par terrain)
 - **File d'attente** : Gestion des joueurs en trop par rapport aux terrains disponibles
@@ -25,6 +27,7 @@ Application de gestion de tournoi de badminton en format "ronde des carrés" (je
 - **Algorithme anti-répétition** : Évite que les joueurs ne rejouent ensemble
 
 ### Scoring
+
 - **Points individuels** : Basé sur les scores des matchs
 - **Victoire** : 3 points + bonus (différence de points / 5)
 - **Défaite** : Points de consolation (score / 10)

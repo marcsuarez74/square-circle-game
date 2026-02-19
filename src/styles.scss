@@ -66,14 +66,16 @@
 
 html {
   height: 100%;
-  @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
 }
 
 body {
@@ -113,7 +115,8 @@ body {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -122,11 +125,14 @@ body {
 }
 
 @keyframes glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 5px var(--accent-glow);
   }
   50% {
-    box-shadow: 0 0 20px var(--accent-glow), 0 0 30px var(--accent-glow);
+    box-shadow:
+      0 0 20px var(--accent-glow),
+      0 0 30px var(--accent-glow);
   }
 }
 
@@ -153,7 +159,10 @@ body {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius) !important;
   box-shadow: var(--shadow-md);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .mat-mdc-card:hover {
@@ -170,7 +179,9 @@ body {
 
 .mat-mdc-button {
   border-radius: var(--border-radius-sm) !important;
-  transition: transform 0.15s ease, background-color 0.2s ease;
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease;
 }
 
 .mat-mdc-button:active {
@@ -215,23 +226,23 @@ body::before {
 }
 
 /* Show animations for all seasonal themes */
-body[class*="theme-"]:not(.theme-default)::before {
+body[class*='theme-']:not(.theme-default)::before {
   opacity: 1;
 }
 
 /* Christmas - Falling snowflakes */
 body.theme-christmas::before {
-  background-image: 
+  background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Ccircle cx='15' cy='15' r='3' fill='white' opacity='0.8'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='2' fill='white' opacity='0.6'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25'%3E%3Ccircle cx='12.5' cy='12.5' r='2.5' fill='white' opacity='0.7'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15'%3E%3Ccircle cx='7.5' cy='7.5' r='1.5' fill='white' opacity='0.5'/%3E%3C/svg%3E");
-  background-size: 
+  background-size:
     80px 80px,
     60px 60px,
     50px 50px,
     40px 40px;
-  background-position: 
+  background-position:
     0 0,
     100px 50px,
     200px 100px,
@@ -241,35 +252,35 @@ body.theme-christmas::before {
 
 @keyframes snowfallflakes {
   0% {
-    background-position: 
+    background-position:
       0 0,
       100px 50px,
       200px 100px,
       300px 150px;
   }
   25% {
-    background-position: 
+    background-position:
       15px 30vh,
       115px calc(50px + 25vh),
       180px calc(100px + 25vh),
       320px calc(150px + 25vh);
   }
   50% {
-    background-position: 
+    background-position:
       -10px 60vh,
       90px calc(50px + 50vh),
       220px calc(100px + 50vh),
       280px calc(150px + 50vh);
   }
   75% {
-    background-position: 
+    background-position:
       20px 90vh,
       110px calc(50px + 75vh),
       190px calc(100px + 75vh),
       310px calc(150px + 75vh);
   }
   100% {
-    background-position: 
+    background-position:
       0 120vh,
       100px calc(50px + 120vh),
       200px calc(100px + 120vh),
@@ -279,26 +290,35 @@ body.theme-christmas::before {
 
 /* Easter - Floating eggs */
 body.theme-easter::before {
-  background-image: 
+  background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cellipse cx='50' cy='50' rx='30' ry='40' fill='%23f0abfc'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cellipse cx='50' cy='50' rx='30' ry='40' fill='%23bae6fd'/%3E%3C/svg%3E");
-  background-size: 100px 120px, 80px 100px;
-  background-position: 10% 20%, 80% 60%;
+  background-size:
+    100px 120px,
+    80px 100px;
+  background-position:
+    10% 20%,
+    80% 60%;
   animation: floatEggs 15s ease-in-out infinite;
 }
 
 @keyframes floatEggs {
-  0%, 100% {
-    background-position: 10% 20%, 80% 60%;
+  0%,
+  100% {
+    background-position:
+      10% 20%,
+      80% 60%;
   }
   50% {
-    background-position: 15% 25%, 75% 55%;
+    background-position:
+      15% 25%,
+      75% 55%;
   }
 }
 
 /* Carnival - Colorful falling confetti */
 body.theme-carnival::before {
-  background-image: 
+  background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Crect x='4' y='1' width='4' height='10' rx='2' fill='%23f72585'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Ccircle cx='5' cy='5' r='4' fill='%234cc9f0'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M7 1 L9 5 L13 7 L9 9 L7 13 L5 9 L1 7 L5 5 Z' fill='%23ffd700'/%3E%3C/svg%3E"),
@@ -307,34 +327,55 @@ body.theme-carnival::before {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Ccircle cx='4' cy='4' r='3' fill='%23ff006e'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 7 L12 7 M7 2 L7 12' stroke='%2300f5ff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpolygon points='6,1 8,4 11,5 8,6 6,9 4,6 1,5 4,4' fill='%23ff9f1c'/%3E%3C/svg%3E");
-  background-size: 
-    15px 15px, 12px 12px, 18px 18px, 14px 14px,
-    12px 12px, 10px 10px, 16px 16px, 14px 14px;
-  background-position: 
-    5% -50px, 15% -30px, 25% -80px, 35% -20px,
-    45% -60px, 55% -40px, 65% -90px, 75% -25px;
+  background-size:
+    15px 15px,
+    12px 12px,
+    18px 18px,
+    14px 14px,
+    12px 12px,
+    10px 10px,
+    16px 16px,
+    14px 14px;
+  background-position:
+    5% -50px,
+    15% -30px,
+    25% -80px,
+    35% -20px,
+    45% -60px,
+    55% -40px,
+    65% -90px,
+    75% -25px;
   animation: falling-confetti 8s linear infinite;
 }
 
 @keyframes falling-confetti {
   0% {
-    background-position: 
-      5% -50px, 15% -30px, 25% -80px, 35% -20px,
-      45% -60px, 55% -40px, 65% -90px, 75% -25px;
+    background-position:
+      5% -50px,
+      15% -30px,
+      25% -80px,
+      35% -20px,
+      45% -60px,
+      55% -40px,
+      65% -90px,
+      75% -25px;
   }
   100% {
-    background-position: 
-      8% calc(100vh + 50px), 18% calc(100vh + 30px),
-      22% calc(100vh + 80px), 38% calc(100vh + 20px),
-      48% calc(100vh + 60px), 52% calc(100vh + 40px),
-      68% calc(100vh + 90px), 72% calc(100vh + 25px);
+    background-position:
+      8% calc(100vh + 50px),
+      18% calc(100vh + 30px),
+      22% calc(100vh + 80px),
+      38% calc(100vh + 20px),
+      48% calc(100vh + 60px),
+      52% calc(100vh + 40px),
+      68% calc(100vh + 90px),
+      72% calc(100vh + 25px);
   }
 }
 
 /* Spring - Falling petals */
 body.theme-spring::before {
-  background-image: 
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'%3E%3Cpath d='M25 5 C25 5, 40 20, 25 45 C25 45, 10 20, 25 5' fill='%23f9a8d4'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'%3E%3Cpath d='M25 5 C25 5, 40 20, 25 45 C25 45, 10 20, 25 5' fill='%23f9a8d4'/%3E%3C/svg%3E");
   background-size: 30px 30px;
   animation: fallPetals 12s linear infinite;
 }
@@ -352,7 +393,7 @@ body.theme-spring::before {
 
 /* Halloween - Fog and floating pumpkins */
 body.theme-halloween::before {
-  background: 
+  background:
     radial-gradient(ellipse at 50% 100%, rgba(249, 115, 22, 0.2) 0%, transparent 50%),
     radial-gradient(ellipse at 20% 80%, rgba(124, 45, 18, 0.3) 0%, transparent 40%),
     radial-gradient(ellipse at 80% 80%, rgba(108, 63, 42, 0.3) 0%, transparent 40%);
@@ -360,7 +401,8 @@ body.theme-halloween::before {
 }
 
 @keyframes fog {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.1;
     transform: translateX(0);
   }
@@ -372,7 +414,7 @@ body.theme-halloween::before {
 
 /* Summer - Sun rays and waves */
 body.theme-summer::before {
-  background: 
+  background:
     radial-gradient(circle at 80% 20%, rgba(251, 191, 36, 0.3) 0%, transparent 30%),
     repeating-linear-gradient(
       90deg,
@@ -385,29 +427,42 @@ body.theme-summer::before {
 }
 
 @keyframes sunWaves {
-  0%, 100% {
-    background-position: 0 0, 0 0;
+  0%,
+  100% {
+    background-position:
+      0 0,
+      0 0;
   }
   50% {
-    background-position: 0 0, 100px 0;
+    background-position:
+      0 0,
+      100px 0;
   }
 }
 
 /* Valentine - Floating hearts */
 body.theme-valentine::before {
-  background-image: 
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath d='M15 25 C15 22, 3 15, 3 8 C3 4, 6 2, 9 2 C12 2, 15 4, 15 8 C15 4, 18 2, 21 2 C24 2, 27 4, 27 8 C27 15, 15 22, 15 25' fill='%23fb7185'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath d='M15 25 C15 22, 3 15, 3 8 C3 4, 6 2, 9 2 C12 2, 15 4, 15 8 C15 4, 18 2, 21 2 C24 2, 27 4, 27 8 C27 15, 15 22, 15 25' fill='%23fb7185'/%3E%3C/svg%3E");
   background-size: 25px 25px;
   animation: floatHearts 10s ease-in-out infinite;
 }
 
 @keyframes floatHearts {
-  0%, 100% {
-    background-position: 20% 10%, 70% 30%, 40% 60%, 80% 80%;
+  0%,
+  100% {
+    background-position:
+      20% 10%,
+      70% 30%,
+      40% 60%,
+      80% 80%;
     opacity: 0.1;
   }
   50% {
-    background-position: 25% 15%, 75% 35%, 45% 65%, 85% 85%;
+    background-position:
+      25% 15%,
+      75% 35%,
+      45% 65%,
+      85% 85%;
     opacity: 0.2;
   }
 }
@@ -439,7 +494,7 @@ body::before {
     --border-radius: 10px;
     --border-radius-sm: 6px;
   }
-  
+
   body::before {
     opacity: 0.05;
   }

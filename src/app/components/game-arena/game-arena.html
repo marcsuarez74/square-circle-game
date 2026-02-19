@@ -3,34 +3,39 @@
     <!-- Header avec timer et contrôles -->
     <div class="arena-header">
       <div class="header-left">
-        <button mat-icon-button 
-                class="back-btn"
-                (click)="backToSetup()"
-                matTooltip="Retour à la configuration">
+        <button
+          mat-icon-button
+          class="back-btn"
+          (click)="backToSetup()"
+          matTooltip="Retour à la configuration"
+        >
           <mat-icon>arrow_back</mat-icon>
         </button>
         <h1>Ronde des Carrés - Manche {{ gameState.currentSet }}</h1>
       </div>
-      
+
       <div class="timer-section">
-        <div class="timer-display"
-             [class.running]="gameState.isTimerRunning && gameState.remainingTime > 60"
-             [class.warning]="gameState.isTimerRunning && gameState.remainingTime <= 60 && gameState.remainingTime > 30"
-             [class.danger]="gameState.isTimerRunning && gameState.remainingTime <= 30">
+        <div
+          class="timer-display"
+          [class.running]="gameState.isTimerRunning && gameState.remainingTime > 60"
+          [class.warning]="
+            gameState.isTimerRunning &&
+            gameState.remainingTime <= 60 &&
+            gameState.remainingTime > 30
+          "
+          [class.danger]="gameState.isTimerRunning && gameState.remainingTime <= 30"
+        >
           {{ formatTime(gameState.remainingTime) }}
         </div>
-        
+
         <div class="timer-controls">
           @if (!gameState.isTimerRunning) {
-            <button mat-raised-button 
-                    color="primary" 
-                    (click)="startRound()">
+            <button mat-raised-button color="primary" (click)="startRound()">
               <mat-icon>play_arrow</mat-icon>
               Déclencher la manche
             </button>
           } @else {
-            <button mat-stroked-button 
-                    (click)="stopRound()">
+            <button mat-stroked-button (click)="stopRound()">
               <mat-icon>pause</mat-icon>
               Pause
             </button>
@@ -49,7 +54,7 @@
               {{ court.name }}
             </mat-card-title>
           </mat-card-header>
-          
+
           <mat-card-content>
             <!-- Visualisation du terrain -->
             <div class="court-visual">
@@ -64,11 +69,11 @@
                     }
                   </div>
                 }
-                
+
                 @if (court.players.length >= 2) {
                   <div class="net"></div>
                 }
-                
+
                 @if (court.players.length === 4 || court.players.length === 2) {
                   <div class="team team-2">
                     @for (player of getTeams(court).team2; track player.id) {
@@ -88,20 +93,24 @@
                 <div class="score-inputs">
                   <mat-form-field appearance="outline" class="score-field">
                     <mat-label>Équipe 1</mat-label>
-                    <input matInput 
-                           type="number" 
-                           [value]="matchScores[court.id]?.team1 || 0"
-                           (change)="updateScore(court.id, 'team1', +$any($event.target).value)">
+                    <input
+                      matInput
+                      type="number"
+                      [value]="matchScores[court.id]?.team1 || 0"
+                      (change)="updateScore(court.id, 'team1', +$any($event.target).value)"
+                    />
                   </mat-form-field>
 
                   <span class="vs">VS</span>
 
                   <mat-form-field appearance="outline" class="score-field">
                     <mat-label>Équipe 2</mat-label>
-                    <input matInput 
-                           type="number" 
-                           [value]="matchScores[court.id]?.team2 || 0"
-                           (change)="updateScore(court.id, 'team2', +$any($event.target).value)">
+                    <input
+                      matInput
+                      type="number"
+                      [value]="matchScores[court.id]?.team2 || 0"
+                      (change)="updateScore(court.id, 'team2', +$any($event.target).value)"
+                    />
                   </mat-form-field>
                 </div>
               </div>

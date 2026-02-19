@@ -34,66 +34,68 @@ export interface ConfirmDialogData {
       </mat-dialog-actions>
     </div>
   `,
-  styles: [`
-    .dialog-container {
-      padding: 24px;
-      text-align: center;
-      min-width: 320px;
-    }
-
-    .dialog-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 16px;
-
-      mat-icon {
-        font-size: 32px;
-        width: 32px;
-        height: 32px;
-        color: white;
+  styles: [
+    `
+      .dialog-container {
+        padding: 24px;
+        text-align: center;
+        min-width: 320px;
       }
 
-      &.warning {
-        background-color: var(--warning);
+      .dialog-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+
+        mat-icon {
+          font-size: 32px;
+          width: 32px;
+          height: 32px;
+          color: white;
+        }
+
+        &.warning {
+          background-color: var(--warning);
+        }
+
+        &.danger {
+          background-color: var(--error);
+        }
+
+        &.info {
+          background-color: var(--info);
+        }
       }
 
-      &.danger {
-        background-color: var(--error);
+      h2 {
+        margin: 0 0 16px 0;
+        color: var(--text-primary);
+        font-size: 1.25rem;
+        font-weight: 600;
       }
 
-      &.info {
-        background-color: var(--info);
+      mat-dialog-content {
+        padding: 0;
+        margin-bottom: 24px;
+
+        p {
+          margin: 0;
+          color: var(--text-secondary);
+          font-size: 1rem;
+          line-height: 1.5;
+        }
       }
-    }
 
-    h2 {
-      margin: 0 0 16px 0;
-      color: var(--text-primary);
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-
-    mat-dialog-content {
-      padding: 0;
-      margin-bottom: 24px;
-
-      p {
-        margin: 0;
-        color: var(--text-secondary);
-        font-size: 1rem;
-        line-height: 1.5;
+      mat-dialog-actions {
+        padding: 0;
+        gap: 12px;
       }
-    }
-
-    mat-dialog-actions {
-      padding: 0;
-      gap: 12px;
-    }
-  `]
+    `,
+  ],
 })
 export class ConfirmDialog {
   private dialogRef = inject(MatDialogRef<ConfirmDialog>);
@@ -101,17 +103,23 @@ export class ConfirmDialog {
 
   getIcon(): string {
     switch (this.data.type) {
-      case 'danger': return 'warning';
-      case 'info': return 'info';
-      default: return 'warning';
+      case 'danger':
+        return 'warning';
+      case 'info':
+        return 'info';
+      default:
+        return 'warning';
     }
   }
 
   getButtonColor(): string {
     switch (this.data.type) {
-      case 'danger': return 'warn';
-      case 'info': return 'primary';
-      default: return 'accent';
+      case 'danger':
+        return 'warn';
+      case 'info':
+        return 'primary';
+      default:
+        return 'accent';
     }
   }
 

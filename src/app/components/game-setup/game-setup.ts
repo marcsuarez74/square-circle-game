@@ -31,7 +31,7 @@ import { PlayerForm } from '../../models/player.model';
     MatSliderModule,
     MatListModule,
     MatDividerModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
   templateUrl: './game-setup.html',
   styleUrl: './game-setup.scss',
@@ -158,7 +158,8 @@ export class GameSetup {
 
         for (const row of jsonData) {
           const rowAny = row as any;
-          const firstName = rowAny['prénom'] || rowAny['Prénom'] || rowAny['prenom'] || rowAny['Prenom'];
+          const firstName =
+            rowAny['prénom'] || rowAny['Prénom'] || rowAny['prenom'] || rowAny['Prenom'];
           const lastName = rowAny['nom'] || rowAny['Nom'];
 
           if (firstName && lastName) {
@@ -173,12 +174,14 @@ export class GameSetup {
           this.playerService.addPlayers(playersToAdd);
           this.showMessage(`${playersToAdd.length} joueurs importés avec succès !`);
         } else {
-          this.showMessage('Aucun joueur trouvé dans le fichier. Format attendu : colonnes "nom" et "prénom"');
+          this.showMessage(
+            'Aucun joueur trouvé dans le fichier. Format attendu : colonnes "nom" et "prénom"',
+          );
         }
 
         this.selectedFile = null;
       } catch (error) {
-        this.showMessage('Erreur lors de l\'import du fichier Excel');
+        this.showMessage("Erreur lors de l'import du fichier Excel");
         console.error(error);
       }
     };

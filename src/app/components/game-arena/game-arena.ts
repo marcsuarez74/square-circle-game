@@ -40,7 +40,7 @@ interface GameState {
     MatInputModule,
     MatFormFieldModule,
     MatListModule,
-    MatBadgeModule
+    MatBadgeModule,
   ],
   templateUrl: './game-arena.html',
   styleUrl: './game-arena.scss',
@@ -126,15 +126,9 @@ export class GameArena implements OnInit, OnDestroy {
             isTeam1 = index === 0;
           }
           const won = isTeam1 ? team1Won : !team1Won;
-          const scoreDiff = isTeam1 
-            ? score.team1 - score.team2 
-            : score.team2 - score.team1;
+          const scoreDiff = isTeam1 ? score.team1 - score.team2 : score.team2 - score.team1;
 
-          this.playerService.updatePlayerStats(
-            player.id,
-            won,
-            Math.max(0, scoreDiff)
-          );
+          this.playerService.updatePlayerStats(player.id, won, Math.max(0, scoreDiff));
         });
       }
     });
@@ -170,9 +164,9 @@ export class GameArena implements OnInit, OnDestroy {
   endGame(): void {
     this.gameService.stopTimer();
     const players = this.playerService.getPlayers();
-    
+
     const rankings = [...players].sort((a, b) => b.totalPoints - a.totalPoints);
-    
+
     console.log('Classement final:', rankings);
     this.showMessage('Partie terminée ! Consultez la console pour le classement.');
   }
@@ -183,12 +177,12 @@ export class GameArena implements OnInit, OnDestroy {
       message: 'Vous allez quitter la partie en cours. Toute progression sera perdue.',
       confirmText: 'Quitter',
       cancelText: 'Annuler',
-      type: 'warning'
+      type: 'warning',
     };
 
     const dialogRef = this.dialog.open(ConfirmDialog, {
       data: dialogData,
-      disableClose: true
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
@@ -201,15 +195,14 @@ export class GameArena implements OnInit, OnDestroy {
 
   hasDuplicateFirstName(firstName: string, playerId: string): boolean {
     if (!this.gameState) return false;
-    
+
     const allPlayers = [
-      ...this.gameState.courts.flatMap(c => c.players),
-      ...this.gameState.waitingQueue
+      ...this.gameState.courts.flatMap((c) => c.players),
+      ...this.gameState.waitingQueue,
     ];
-    
-    return allPlayers.some(p => 
-      p.id !== playerId && 
-      p.firstName.toLowerCase() === firstName.toLowerCase()
+
+    return allPlayers.some(
+      (p) => p.id !== playerId && p.firstName.toLowerCase() === firstName.toLowerCase(),
     );
   }
 

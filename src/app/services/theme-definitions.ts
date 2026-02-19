@@ -1,4 +1,12 @@
-export type SeasonalTheme = 'default' | 'christmas' | 'easter' | 'carnival' | 'spring' | 'halloween' | 'summer' | 'valentine';
+export type SeasonalTheme =
+  | 'default'
+  | 'christmas'
+  | 'easter'
+  | 'carnival'
+  | 'spring'
+  | 'halloween'
+  | 'summer'
+  | 'valentine';
 
 export interface ThemeDefinition {
   id: SeasonalTheme;
@@ -48,9 +56,9 @@ export const themes: Record<SeasonalTheme, ThemeDefinition> = {
       error: '#ef4444',
       info: '#3b82f6',
     },
-    gradient: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)'
+    gradient: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
   },
-  
+
   christmas: {
     id: 'christmas',
     name: 'Noël',
@@ -73,9 +81,9 @@ export const themes: Record<SeasonalTheme, ThemeDefinition> = {
       error: '#ef4444',
       info: '#60a5fa',
     },
-    gradient: 'linear-gradient(135deg, #0c1f1a 0%, #1a3d2e 50%, #7f1d1d 100%)'
+    gradient: 'linear-gradient(135deg, #0c1f1a 0%, #1a3d2e 50%, #7f1d1d 100%)',
   },
-  
+
   easter: {
     id: 'easter',
     name: 'Pâques',
@@ -98,9 +106,9 @@ export const themes: Record<SeasonalTheme, ThemeDefinition> = {
       error: '#ef4444',
       info: '#60a5fa',
     },
-    gradient: 'linear-gradient(135deg, #fdf4ff 0%, #fce7f3 50%, #e0f2fe 100%)'
+    gradient: 'linear-gradient(135deg, #fdf4ff 0%, #fce7f3 50%, #e0f2fe 100%)',
   },
-  
+
   carnival: {
     id: 'carnival',
     name: 'Carnaval',
@@ -123,9 +131,9 @@ export const themes: Record<SeasonalTheme, ThemeDefinition> = {
       error: '#e94560',
       info: '#4cc9f0',
     },
-    gradient: 'linear-gradient(135deg, #1a1a2e 0%, #ff006e 25%, #8338ec 50%, #3a86ff 100%)'
+    gradient: 'linear-gradient(135deg, #1a1a2e 0%, #ff006e 25%, #8338ec 50%, #3a86ff 100%)',
   },
-  
+
   spring: {
     id: 'spring',
     name: 'Printemps',
@@ -148,9 +156,9 @@ export const themes: Record<SeasonalTheme, ThemeDefinition> = {
       error: '#ef4444',
       info: '#60a5fa',
     },
-    gradient: 'linear-gradient(135deg, #ecfdf5 0%, #fce7f3 50%, #e0f2fe 100%)'
+    gradient: 'linear-gradient(135deg, #ecfdf5 0%, #fce7f3 50%, #e0f2fe 100%)',
   },
-  
+
   halloween: {
     id: 'halloween',
     name: 'Halloween',
@@ -173,9 +181,9 @@ export const themes: Record<SeasonalTheme, ThemeDefinition> = {
       error: '#dc2626',
       info: '#60a5fa',
     },
-    gradient: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #7c2d12 100%)'
+    gradient: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #7c2d12 100%)',
   },
-  
+
   summer: {
     id: 'summer',
     name: 'Été',
@@ -198,9 +206,9 @@ export const themes: Record<SeasonalTheme, ThemeDefinition> = {
       error: '#ef4444',
       info: '#38bdf8',
     },
-    gradient: 'linear-gradient(135deg, #0c4a6e 0%, #0284c7 50%, #f59e0b 100%)'
+    gradient: 'linear-gradient(135deg, #0c4a6e 0%, #0284c7 50%, #f59e0b 100%)',
   },
-  
+
   valentine: {
     id: 'valentine',
     name: 'Saint-Valentin',
@@ -223,6 +231,6 @@ export const themes: Record<SeasonalTheme, ThemeDefinition> = {
       error: '#e11d48',
       info: '#60a5fa',
     },
-    gradient: 'linear-gradient(135deg, #4a0d26 0%, #7f1d44 50%, #be123c 100%)'
-  }
+    gradient: 'linear-gradient(135deg, #4a0d26 0%, #7f1d44 50%, #be123c 100%)',
+  },
 };

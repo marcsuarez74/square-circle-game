@@ -9,7 +9,7 @@ import { GameArena } from './components/game-arena/game-arena';
 const routes: Routes = [
   { path: '', component: GameSetup },
   { path: 'game', component: GameArena },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];
 
 export const appConfig: ApplicationConfig = {
@@ -17,6 +17,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient()
-  ]
+    provideHttpClient(),
+  ],
 };
