@@ -487,12 +487,16 @@
     bottom: 24px;
     right: 24px;
     z-index: 100;
-    box-shadow: var(--shadow-lg), 0 0 0 4px var(--accent-glow);
+    box-shadow:
+      var(--shadow-lg),
+      0 0 0 4px var(--accent-glow);
     transition: all 0.3s ease;
 
     &:hover {
       transform: translateY(-4px) scale(1.05);
-      box-shadow: var(--shadow-lg), 0 0 20px var(--accent-glow);
+      box-shadow:
+        var(--shadow-lg),
+        0 0 20px var(--accent-glow);
     }
 
     mat-icon {
