@@ -110,8 +110,8 @@
                     <input
                       matInput
                       type="number"
-                      [value]="matchScores()[court.id]?.team1 || 0"
-                      (input)="onScoreInput(court.id, 'team1', $event)"
+                      [ngModel]="matchScores()[court.id]?.team1 || 0"
+                      (ngModelChange)="updateScore(court.id, 'team1', $event)"
                     />
                   </mat-form-field>
 
@@ -122,8 +122,8 @@
                     <input
                       matInput
                       type="number"
-                      [value]="matchScores()[court.id]?.team2 || 0"
-                      (input)="onScoreInput(court.id, 'team2', $event)"
+                      [ngModel]="matchScores()[court.id]?.team2 || 0"
+                      (ngModelChange)="updateScore(court.id, 'team2', $event)"
                     />
                   </mat-form-field>
                 </div>
