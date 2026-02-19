@@ -2,6 +2,10 @@
 
 Application de gestion de tournoi de badminton en format "ronde des carrés" (jeu individuel avec rotation des terrains).
 
+## 🎮 Demo
+
+🔗 **Essayez l'application en ligne** : [https://marcsuarez74.github.io/square-circle-game/](https://marcsuarez74.github.io/square-circle-game/)
+
 ## Fonctionnalités
 
 ### Configuration de la partie (Page 1)
