@@ -2,16 +2,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, interval, Subscription } from 'rxjs';
 import { Court } from '../models/court.model';
 import { GameConfig } from '../models/game-config.model';
+import { GameState } from '../models/game-state.model';
 import { Player } from '../models/player.model';
 import { PlayerService } from './player';
-
-interface GameState {
-  courts: Court[];
-  waitingQueue: Player[];
-  isTimerRunning: boolean;
-  remainingTime: number;
-  currentSet: number;
-}
+import { GameStore } from './game-store';
+import { inject } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',

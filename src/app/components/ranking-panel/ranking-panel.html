@@ -1,0 +1,69 @@
+<div class="ranking-panel-container" [class.open]="isVisible">
+  <!-- Trigger Button -->
+  <button
+    class="ranking-trigger"
+    (click)="isVisible ? onClose() : null"
+    [class.active]="isVisible"
+    *ngIf="!isVisible">
+    <mat-icon>emoji_events</mat-icon>
+  </button>
+
+  <!-- Panel -->
+  <div class="ranking-panel" [class.visible]="isVisible">
+    <div class="ranking-header">
+      <h2>Classement</h2>
+      <div class="header-actions">
+        <button
+          class="export-btn"
+          (click)="onExport()"
+          matTooltip="Exporter la partie">
+          <mat-icon>download</mat-icon>
+          <span>Exporter</span>
+        </button>
+        <button class="close-btn" (click)="onClose()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="ranking-list">
+      @if (sortedPlayersWithCurrentScores().length === 0) {
+        <div class="empty-state">
+          <p>Aucun joueur</p>
+        </div>
+      } @else {
+        @for (player of sortedPlayersWithCurrentScores(); track player.id; let i = $index) {
+          <div class="ranking-item" [class.top-3]="i < 3">
+            <div class="rank">
+              @if (i === 0) {
+                <span class="medal gold">1</span>
+              } @else if (i === 1) {
+                <span class="medal silver">2</span>
+              } @else if (i === 2) {
+                <span class="medal bronze">3</span>
+              } @else {
+                <span class="position">{{ i + 1 }}</span>
+              }
+            </div>
+            <div class="player-info">
+              <span class="player-name">{{ getPlayerDisplayName(player) }}</span>
+              <span class="player-stats">{{ player.wins }} Victoire / {{ player.matchesPlayed }} Match joué</span>
+            </div>
+            <div class="score">{{ getPlayerTotalPoints(player) }} pts</div>
+          </div>
+        }
+      }
+    </div>
+
+    @if (store.gameState()) {
+      <div class="ranking-footer">
+        <div class="game-info">
+          <span>Manche {{ store.currentSet() }}</span>
+          @if (store.isTimerRunning()) {
+            <span class="timer-status">⏱️ En cours</span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

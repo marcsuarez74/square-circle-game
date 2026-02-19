@@ -67,16 +67,15 @@ export class PlayerService {
     this.playersSubject.next([]);
   }
 
-  updatePlayerStats(playerId: string, won: boolean, score: number): void {
+  updatePlayerStats(playerId: string, won: boolean, teamScore: number): void {
     const player = this.players.find(p => p.id === playerId);
     if (player) {
       player.matchesPlayed++;
       if (won) {
         player.wins++;
-        player.totalPoints += 3 + Math.floor(score / 5); // 3 points for win + bonus
-      } else {
-        player.totalPoints += Math.max(0, Math.floor(score / 10)); // Consolation points
       }
+      // Accumulate team score directly (cumulative scoring)
+      player.totalPoints += teamScore;
       this.playersSubject.next([...this.players]);
     }
   }

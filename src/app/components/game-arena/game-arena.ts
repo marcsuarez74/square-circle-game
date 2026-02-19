@@ -1,31 +1,24 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatListModule } from '@angular/material/list';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { MatBadgeModule } from '@angular/material/badge';
-import { CommonModule, AsyncPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { RankingPanel } from '../ranking-panel/ranking-panel';
 import { GameService } from '../../services/game';
-import { PlayerService } from '../../services/player';
+import { GameStore } from '../../store/game.store';
+import { GameState } from '../../models/game-state.model';
 import { Court } from '../../models/court.model';
 import { Player } from '../../models/player.model';
 import { ConfirmDialog, ConfirmDialogData } from '../confirm-dialog/confirm-dialog';
-
-interface GameState {
-  courts: Court[];
-  waitingQueue: Player[];
-  isTimerRunning: boolean;
-  remainingTime: number;
-  currentSet: number;
-}
 
 @Component({
   selector: 'app-game-arena',
@@ -39,109 +32,83 @@ interface GameState {
     MatDividerModule,
     MatInputModule,
     MatFormFieldModule,
-    MatListModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatTooltipModule,
+    RankingPanel
   ],
   templateUrl: './game-arena.html',
   styleUrl: './game-arena.scss',
 })
 export class GameArena implements OnInit, OnDestroy {
+  private store = inject(GameStore);
   private gameService = inject(GameService);
-  private playerService = inject(PlayerService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
-  gameState: GameState | null = null;
-  private subscription: Subscription | null = null;
+  // Expose store signals
+  protected gameState = this.store.gameState;
+  protected players = this.store.players;
+  protected matchScores = this.store.matchScores;
+  protected isTimerRunning = this.store.isTimerRunning;
+  protected remainingTime = this.store.remainingTime;
+  protected currentSet = this.store.currentSet;
+  protected courtCount = this.store.courtCount;
+  protected waitingPlayers = this.store.waitingPlayers;
+  protected sortedPlayers = this.store.sortedPlayers;
+  protected isGameActive = this.store.isGameActive;
 
-  matchScores: { [courtId: number]: { team1: number; team2: number } } = {};
+  isRankingPanelVisible = signal(false);
+  private saveInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
-    this.subscription = this.gameService.getState$().subscribe((state) => {
-      this.gameState = state;
-      this.initializeScores();
-    });
-
-    if (!this.gameService.getCurrentState().courts.length) {
+    // Navigate back if no game is active
+    if (!this.isGameActive()) {
       this.router.navigate(['/']);
       return;
     }
+
+    // Initialize scores for courts
+    this.initializeScores();
+
+    // Auto-save every 10 seconds
+    this.saveInterval = setInterval(() => {
+      this.saveGame();
+    }, 10000);
+
+    // Save on page unload
+    window.addEventListener('beforeunload', this.handleBeforeUnload.bind(this));
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    if (this.saveInterval) {
+      clearInterval(this.saveInterval);
     }
+    window.removeEventListener('beforeunload', this.handleBeforeUnload.bind(this));
+
+    // Save one last time
+    this.saveGame();
   }
 
-  private initializeScores(): void {
-    if (this.gameState) {
-      this.gameState.courts.forEach((court) => {
-        if (!this.matchScores[court.id]) {
-          this.matchScores[court.id] = { team1: 0, team2: 0 };
-        }
-      });
-    }
+  private handleBeforeUnload(): void {
+    this.saveGame();
   }
 
-  startRound(): void {
-    if (this.gameState?.isTimerRunning) return;
-
-    this.gameService.startTimer();
-    this.showMessage('Manche lancée !');
+  private saveGame(): void {
+    this.store.persistToStorage();
   }
 
-  stopRound(): void {
-    this.gameService.stopTimer();
-  }
+  initializeScores(): void {
+    const state = this.gameState();
+    if (!state) return;
 
-  shufflePlayers(): void {
-    this.gameService.shufflePlayers();
-    this.showMessage('Joueurs mélangés !');
-  }
-
-  nextRound(): void {
-    this.saveMatchResults();
-    this.gameService.nextRound();
-    this.matchScores = {};
-    this.showMessage('Nouvelle manche !');
-  }
-
-  private saveMatchResults(): void {
-    if (!this.gameState) return;
-
-    this.gameState.courts.forEach((court) => {
-      if (court.players.length === 4 || court.players.length === 2) {
-        const score = this.matchScores[court.id] || { team1: 0, team2: 0 };
-        const team1Won = score.team1 > score.team2;
-
-        court.players.forEach((player, index) => {
-          // For doubles: index 0-1 is team1, index 2-3 is team2
-          // For singles: index 0 is team1, index 1 is team2
-          let isTeam1: boolean;
-          if (court.players.length === 4) {
-            isTeam1 = index < 2;
-          } else {
-            isTeam1 = index === 0;
-          }
-          const won = isTeam1 ? team1Won : !team1Won;
-          const scoreDiff = isTeam1 
-            ? score.team1 - score.team2 
-            : score.team2 - score.team1;
-
-          this.playerService.updatePlayerStats(
-            player.id,
-            won,
-            Math.max(0, scoreDiff)
-          );
-        });
+    state.courts.forEach(court => {
+      const scores = this.matchScores();
+      if (!scores[court.id]) {
+        this.store.updateScore(court.id, 'team1', 0);
+        this.store.updateScore(court.id, 'team2', 0);
       }
     });
-  }
-
-  formatTime(seconds: number): string {
-    return this.gameService.formatTime(seconds);
   }
 
   getTeams(court: Court): { team1: Player[]; team2: Player[] } {
@@ -151,7 +118,6 @@ export class GameArena implements OnInit, OnDestroy {
         team2: [court.players[2], court.players[3]],
       };
     } else if (court.players.length === 2) {
-      // Single match: 1 vs 1
       return {
         team1: [court.players[0]],
         team2: [court.players[1]],
@@ -160,21 +126,110 @@ export class GameArena implements OnInit, OnDestroy {
     return { team1: court.players, team2: [] };
   }
 
-  updateScore(courtId: number, team: 'team1' | 'team2', value: number): void {
-    if (!this.matchScores[courtId]) {
-      this.matchScores[courtId] = { team1: 0, team2: 0 };
-    }
-    this.matchScores[courtId][team] = Math.max(0, value);
+  onScoreInput(courtId: number, team: 'team1' | 'team2', event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = parseInt(input.value, 10) || 0;
+    this.updateScore(courtId, team, value);
   }
 
-  endGame(): void {
+  updateScore(courtId: number, team: 'team1' | 'team2', value: number): void {
+    this.store.updateScore(courtId, team, Math.max(0, value));
+  }
+
+  nextRound(): void {
+    this.saveMatchResults();
+    this.gameService.nextRound();
+    this.store.resetMatchScores();
+    // Sync game state from service to store
+    this.store.setGameState(this.gameService.getCurrentState());
+    this.showMessage('Nouvelle manche !');
+  }
+
+  shufflePlayers(): void {
+    this.gameService.shufflePlayers();
+    // Sync game state from service to store
+    this.store.setGameState(this.gameService.getCurrentState());
+    this.showMessage('Joueurs mélangés !');
+  }
+
+  startRound(): void {
+    this.gameService.startTimer();
+    // Sync game state from service to store
+    this.store.setGameState(this.gameService.getCurrentState());
+  }
+
+  stopRound(): void {
     this.gameService.stopTimer();
-    const players = this.playerService.getPlayers();
-    
-    const rankings = [...players].sort((a, b) => b.totalPoints - a.totalPoints);
-    
-    console.log('Classement final:', rankings);
-    this.showMessage('Partie terminée ! Consultez la console pour le classement.');
+    // Sync game state from service to store
+    this.store.setGameState(this.gameService.getCurrentState());
+  }
+
+  formatTime(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  private saveMatchResults(): void {
+    const state = this.gameState();
+    if (!state) return;
+
+    const scores = this.matchScores();
+
+    state.courts.forEach((court) => {
+      if (court.players.length === 4 || court.players.length === 2) {
+        const score = scores[court.id] || { team1: 0, team2: 0 };
+        const team1Won = score.team1 > score.team2;
+
+        court.players.forEach((player, index) => {
+          let isTeam1: boolean;
+          if (court.players.length === 4) {
+            isTeam1 = index < 2;
+          } else {
+            isTeam1 = index === 0;
+          }
+          const won = isTeam1 ? team1Won : !team1Won;
+          const teamScore = isTeam1 ? score.team1 : score.team2;
+
+          this.store.updatePlayerStats(
+            player.id,
+            won,
+            teamScore
+          );
+        });
+      }
+    });
+  }
+
+  hasDuplicateFirstName(firstName: string, playerId: string): boolean {
+    const state = this.gameState();
+    if (!state) return false;
+
+    const allPlayers = [
+      ...state.courts.flatMap(c => c.players),
+      ...state.waitingQueue
+    ];
+
+    return allPlayers.some(p =>
+      p.id !== playerId &&
+      p.firstName.toLowerCase() === firstName.toLowerCase()
+    );
+  }
+
+  getPlayerDisplayName(player: Player): string {
+    if (this.hasDuplicateFirstName(player.firstName, player.id)) {
+      const lastNameInitial = player.lastName.charAt(0).toUpperCase();
+      return `${player.firstName} ${lastNameInitial}.`;
+    }
+    return player.firstName;
+  }
+
+  toggleRankingPanel(): void {
+    this.isRankingPanelVisible.update(visible => !visible);
+  }
+
+  hideRankingPanel(): void {
+    this.isRankingPanelVisible.set(false);
   }
 
   backToSetup(): void {
@@ -193,35 +248,35 @@ export class GameArena implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
-        this.gameService.resetGame();
+        this.store.clearStorage();
         this.router.navigate(['/']);
       }
     });
   }
 
-  hasDuplicateFirstName(firstName: string, playerId: string): boolean {
-    if (!this.gameState) return false;
-    
-    const allPlayers = [
-      ...this.gameState.courts.flatMap(c => c.players),
-      ...this.gameState.waitingQueue
-    ];
-    
-    return allPlayers.some(p => 
-      p.id !== playerId && 
-      p.firstName.toLowerCase() === firstName.toLowerCase()
-    );
+  endGame(): void {
+    // Save final results
+    this.saveMatchResults();
+
+    // Clear saved game
+    this.store.clearStorage();
+
+    // Export final results
+    this.store.exportToJSON();
+
+    const allPlayers = this.players();
+    const rankings = [...allPlayers].sort((a, b) => b.totalPoints - a.totalPoints);
+
+    console.log('Classement final:', rankings);
+    this.showMessage('Partie terminée ! Résultats exportés.');
+
+    // Navigate back to setup after a delay
+    setTimeout(() => {
+      this.router.navigate(['/']);
+    }, 3000);
   }
 
-  getPlayerDisplayName(player: Player): string {
-    if (this.hasDuplicateFirstName(player.firstName, player.id)) {
-      const lastNameInitial = player.lastName.charAt(0).toUpperCase();
-      return `${player.firstName} ${lastNameInitial}.`;
-    }
-    return player.firstName;
-  }
-
-  private showMessage(message: string): void {
+  protected showMessage(message: string): void {
     this.snackBar.open(message, 'Fermer', {
       duration: 3000,
       horizontalPosition: 'center',
