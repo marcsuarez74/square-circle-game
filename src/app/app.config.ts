@@ -5,6 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 
 import { GameSetup } from './components/game-setup/game-setup';
 import { GameArena } from './components/game-arena/game-arena';
+import { GameStore } from './store/game.store';
 
 const routes: Routes = [
   { path: '', component: GameSetup },
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient()
+    provideHttpClient(),
+    GameStore
   ]
 };

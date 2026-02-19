@@ -73,6 +73,30 @@
               </div>
             </div>
 
+            <!-- JSON Import (Saved Games) -->
+            <div class="import-section json-import">
+              <input 
+                type="file" 
+                #jsonFileInput 
+                accept=".json" 
+                (change)="onJsonFileSelected($event)" 
+                hidden>
+              
+              <div 
+                class="drop-zone json-zone"
+                [class.dragging]="isJsonDragging"
+                (click)="jsonFileInput.click()"
+                (dragover)="onJsonDragOver($event)"
+                (dragleave)="onJsonDragLeave($event)"
+                (drop)="onJsonDrop($event)">
+                <mat-icon>restore</mat-icon>
+                <p class="drop-text">
+                  {{ isJsonDragging ? 'Déposez le fichier ici' : 'Charger une partie sauvegardée' }}
+                </p>
+                <p class="drop-hint">Glissez-déposez ou cliquez • Format : .json exporté</p>
+              </div>
+            </div>
+
             <!-- Players List -->
             <div class="players-section">
               @if (playerService.getPlayers$() | async; as players) {
@@ -158,7 +182,7 @@
                 <mat-icon>timer</mat-icon>
                 Durée du match
                 @if (matchDurationMinutes) {
-                  <span style="color: #667eea; margin-left: 8px;"> ({{ matchDurationMinutes }} minutes)</span>
+                  <span style="color: #667eea; margin-left: 8px;"> ({{ formatDuration(matchDurationMinutes) }})</span>
                 }
               </div>
               <div class="timer-grid">
@@ -167,7 +191,7 @@
                     mat-stroked-button
                     [class.active]="matchDurationMinutes === preset"
                     (click)="selectTimer(preset)">
-                    {{ preset }} min
+                    {{ formatDuration(preset) }}
                   </button>
                 }
               </div>

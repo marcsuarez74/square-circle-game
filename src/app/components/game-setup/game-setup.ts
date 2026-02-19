@@ -15,7 +15,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import * as XLSX from 'xlsx';
 import { PlayerService } from '../../services/player';
 import { GameService } from '../../services/game';
+import { GameStore } from '../../store/game.store';
 import { PlayerForm } from '../../models/player.model';
+import { GameState } from '../../models/game-state.model';
 
 @Component({
   selector: 'app-game-setup',
@@ -41,6 +43,7 @@ export class GameSetup {
   private snackBar = inject(MatSnackBar);
   playerService = inject(PlayerService);
   private gameService = inject(GameService);
+  private store = inject(GameStore);
 
   // Player form
   newPlayer: PlayerForm = {
@@ -80,6 +83,15 @@ export class GameSetup {
 
   selectTimer(minutes: number): void {
     this.matchDurationMinutes = minutes;
+  }
+
+  // Format timer duration for display
+  formatDuration(minutes: number): string {
+    if (minutes < 1) {
+      const seconds = Math.round(minutes * 60);
+      return `${seconds} sec`;
+    }
+    return `${minutes} min`;
   }
 
   addPlayer(): void {
@@ -186,6 +198,102 @@ export class GameSetup {
     reader.readAsArrayBuffer(this.selectedFile);
   }
 
+  // JSON Import (Saved Games)
+  isJsonDragging = false;
+  selectedJsonFile: File | null = null;
+
+  onJsonFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedJsonFile = input.files[0];
+      this.importJson();
+    }
+  }
+
+  onJsonDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isJsonDragging = true;
+  }
+
+  onJsonDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isJsonDragging = false;
+  }
+
+  onJsonDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isJsonDragging = false;
+
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.name.endsWith('.json')) {
+        this.selectedJsonFile = file;
+        this.importJson();
+      } else {
+        this.showMessage('Veuillez déposer un fichier JSON (.json)');
+      }
+    }
+  }
+
+  importJson(): void {
+    if (!this.selectedJsonFile) return;
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      try {
+        const jsonContent = JSON.parse(e.target.result);
+        
+        // Check if it's a valid exported game
+        if (!jsonContent.gameState || !jsonContent.players) {
+          this.showMessage('Fichier JSON invalide : structure incorrecte');
+          return;
+        }
+
+        // Show confirmation dialog
+        if (this.playerService.getPlayers().length > 0) {
+          if (!confirm('Cela remplacera les joueurs actuels. Continuer ?')) {
+            this.selectedJsonFile = null;
+            return;
+          }
+        }
+
+        // Load players
+        this.playerService.clearPlayers();
+        if (jsonContent.players && jsonContent.players.length > 0) {
+          const playersToAdd = jsonContent.players.map((p: any) => ({
+            firstName: p.firstName,
+            lastName: p.lastName
+          }));
+          this.playerService.addPlayers(playersToAdd);
+        }
+
+        // Restore configuration
+        if (jsonContent.gameState) {
+          this.numberOfCourts = jsonContent.gameState.courts?.length || 2;
+        }
+
+        // If there's a timer configuration
+        if (jsonContent.gameState?.remainingTime) {
+          // Convert seconds to minutes
+          this.matchDurationMinutes = Math.ceil(jsonContent.gameState.remainingTime / 60);
+        }
+
+        this.showMessage(`Partie chargée : ${jsonContent.players?.length || 0} joueurs, manche ${jsonContent.gameState?.currentSet || 1}`);
+        this.selectedJsonFile = null;
+
+      } catch (error) {
+        this.showMessage('Erreur lors de l\'import du fichier JSON');
+        console.error(error);
+      }
+    };
+
+    reader.readAsText(this.selectedJsonFile);
+  }
+
   startGame(): void {
     const players = this.playerService.getPlayers();
 
@@ -199,12 +307,20 @@ export class GameSetup {
       return;
     }
 
+    // Configure game service
     this.gameService.setConfig({
       numberOfCourts: this.numberOfCourts,
       matchDuration: this.matchDurationMinutes * 60,
     });
 
+    // Assign players to courts
     this.gameService.assignPlayersToCourts(players);
+
+    // Initialize store with game state and players
+    const gameState = this.gameService.getCurrentState();
+    this.store.setGameState(gameState);
+    this.store.setPlayers(players);
+
     this.router.navigate(['/game']);
   }
 
