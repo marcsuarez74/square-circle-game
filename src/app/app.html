@@ -5,14 +5,45 @@
       <span class="logo-text">La Ronde des Carrés</span>
     </div>
 
-    <button
-      class="theme-toggle"
-      (click)="themeService.toggle()"
-      [attr.aria-label]="themeService.isDark() ? 'Passer en mode clair' : 'Passer en mode sombre'">
-      <span class="theme-icon" [class.rotate]="themeService.isDark()">
-        {{ themeService.isDark() ? '🌙' : '☀️' }}
-      </span>
-    </button>
+    <div class="header-controls">
+      <!-- Seasonal Theme Selector -->
+      <div class="seasonal-theme-selector" [class.open]="isThemeSelectorOpen()">
+        <button 
+          class="theme-selector-btn"
+          (click)="toggleThemeSelector()"
+          [attr.aria-label]="'Changer le thème'">
+          <span class="current-theme-emoji">{{ themeService.currentTheme().emoji }}</span>
+          <span class="current-theme-name">Thème</span>
+          <mat-icon [class.rotate]="isThemeSelectorOpen()">expand_more</mat-icon>
+        </button>
+
+        @if (isThemeSelectorOpen()) {
+          <div class="theme-dropdown animate-fade-in">
+            @for (theme of themeService.availableThemes; track theme.id) {
+              <button 
+                class="theme-option"
+                [class.active]="themeService.seasonalTheme() === theme.id"
+                (click)="selectTheme(theme.id)">
+                <span class="theme-emoji">{{ theme.emoji }}</span>
+                <span class="theme-name">{{ theme.name }}</span>
+                @if (themeService.seasonalTheme() === theme.id) {
+                  <mat-icon class="check-icon">check</mat-icon>
+                }
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <button
+        class="theme-toggle"
+        (click)="themeService.toggle()"
+        [attr.aria-label]="themeService.isDark() ? 'Passer en mode clair' : 'Passer en mode sombre'">
+        <span class="theme-icon" [class.rotate]="themeService.isDark()">
+          {{ themeService.isDark() ? '🌙' : '☀️' }}
+        </span>
+      </button>
+    </div>
   </div>
 </header>
 

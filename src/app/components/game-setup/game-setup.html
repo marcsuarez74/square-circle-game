@@ -40,20 +40,6 @@
                 <mat-icon matPrefix>badge</mat-icon>
               </mat-form-field>
 
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Niveau</mat-label>
-                <input 
-                  matInput 
-                  type="number" 
-                  [(ngModel)]="newPlayer.level" 
-                  placeholder="1-10"
-                  min="1"
-                  max="10"
-                  (keyup.enter)="addPlayer()">
-                <mat-icon matPrefix>star</mat-icon>
-                <mat-hint>Optionnel - pour équilibrer les équipes</mat-hint>
-              </mat-form-field>
-
               <button 
                 mat-raised-button 
                 (click)="addPlayer()"
@@ -100,12 +86,9 @@
                     @for (player of players; track player.id) {
                       <div class="player-card">
                         <div class="player-avatar">{{ player.number }}</div>
-                        <div class="player-info">
-                          <div class="player-name">{{ player.firstName }} {{ player.lastName }}</div>
-                          @if (player.level) {
-                            <div class="player-level">Niveau {{ player.level }}/10</div>
-                          }
-                        </div>
+                         <div class="player-info">
+                           <div class="player-name">{{ player.firstName }} {{ player.lastName }}</div>
+                         </div>
                         <button 
                           mat-icon-button 
                           color="warn" 

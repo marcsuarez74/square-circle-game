@@ -17,6 +17,7 @@ import { GameService } from '../../services/game';
 import { PlayerService } from '../../services/player';
 import { Court } from '../../models/court.model';
 import { Player } from '../../models/player.model';
+import { ConfirmDialog, ConfirmDialogData } from '../confirm-dialog/confirm-dialog';
 
 interface GameState {
   courts: Court[];
@@ -111,12 +112,19 @@ export class GameArena implements OnInit, OnDestroy {
     if (!this.gameState) return;
 
     this.gameState.courts.forEach((court) => {
-      if (court.players.length === 4) {
+      if (court.players.length === 4 || court.players.length === 2) {
         const score = this.matchScores[court.id] || { team1: 0, team2: 0 };
         const team1Won = score.team1 > score.team2;
 
         court.players.forEach((player, index) => {
-          const isTeam1 = index < 2;
+          // For doubles: index 0-1 is team1, index 2-3 is team2
+          // For singles: index 0 is team1, index 1 is team2
+          let isTeam1: boolean;
+          if (court.players.length === 4) {
+            isTeam1 = index < 2;
+          } else {
+            isTeam1 = index === 0;
+          }
           const won = isTeam1 ? team1Won : !team1Won;
           const scoreDiff = isTeam1 
             ? score.team1 - score.team2 
@@ -142,6 +150,12 @@ export class GameArena implements OnInit, OnDestroy {
         team1: [court.players[0], court.players[1]],
         team2: [court.players[2], court.players[3]],
       };
+    } else if (court.players.length === 2) {
+      // Single match: 1 vs 1
+      return {
+        team1: [court.players[0]],
+        team2: [court.players[1]],
+      };
     }
     return { team1: court.players, team2: [] };
   }
@@ -161,6 +175,50 @@ export class GameArena implements OnInit, OnDestroy {
     
     console.log('Classement final:', rankings);
     this.showMessage('Partie terminée ! Consultez la console pour le classement.');
+  }
+
+  backToSetup(): void {
+    const dialogData: ConfirmDialogData = {
+      title: 'Quitter la partie ?',
+      message: 'Vous allez quitter la partie en cours. Toute progression sera perdue.',
+      confirmText: 'Quitter',
+      cancelText: 'Annuler',
+      type: 'warning'
+    };
+
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      data: dialogData,
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.gameService.resetGame();
+        this.router.navigate(['/']);
+      }
+    });
+  }
+
+  hasDuplicateFirstName(firstName: string, playerId: string): boolean {
+    if (!this.gameState) return false;
+    
+    const allPlayers = [
+      ...this.gameState.courts.flatMap(c => c.players),
+      ...this.gameState.waitingQueue
+    ];
+    
+    return allPlayers.some(p => 
+      p.id !== playerId && 
+      p.firstName.toLowerCase() === firstName.toLowerCase()
+    );
+  }
+
+  getPlayerDisplayName(player: Player): string {
+    if (this.hasDuplicateFirstName(player.firstName, player.id)) {
+      const lastNameInitial = player.lastName.charAt(0).toUpperCase();
+      return `${player.firstName} ${lastNameInitial}.`;
+    }
+    return player.firstName;
   }
 
   private showMessage(message: string): void {

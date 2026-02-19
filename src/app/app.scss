@@ -38,6 +38,119 @@
   letter-spacing: -0.025em;
 }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Seasonal Theme Selector */
+.seasonal-theme-selector {
+  position: relative;
+}
+
+.theme-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--bg-tertiary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+
+  &:hover {
+    border-color: var(--accent-primary);
+    background-color: var(--bg-hover);
+  }
+
+  .current-theme-emoji {
+    font-size: 20px;
+  }
+
+  .current-theme-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    
+    @media (max-width: 480px) {
+      display: none;
+    }
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s ease;
+    color: var(--text-secondary);
+
+    &.rotate {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.theme-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 1001;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  text-align: left;
+
+  &:hover {
+    background-color: var(--bg-hover);
+  }
+
+  &.active {
+    background-color: var(--accent-primary);
+    color: white;
+
+    .check-icon {
+      opacity: 1;
+    }
+  }
+
+  .theme-emoji {
+    font-size: 24px;
+  }
+
+  .theme-name {
+    flex: 1;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  .check-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+}
+
 .theme-toggle {
   width: 44px;
   height: 44px;

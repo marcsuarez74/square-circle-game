@@ -46,7 +46,6 @@ export class GameSetup {
   newPlayer: PlayerForm = {
     firstName: '',
     lastName: '',
-    level: undefined,
   };
 
   // Game configuration
@@ -58,7 +57,7 @@ export class GameSetup {
   isDragging = false;
 
   // Timer presets
-  timerPresets = [10, 15, 20, 25, 30];
+  timerPresets = [0.5, 10, 15, 20, 25, 30];
 
   get isFormValid(): boolean {
     const players = this.playerService.getPlayers();
@@ -67,15 +66,15 @@ export class GameSetup {
 
   getValidationStatus(): { valid: boolean; message: string } {
     const players = this.playerService.getPlayers();
-    
+
     if (players.length < 2) {
       return { valid: false, message: `Il manque ${2 - players.length} joueur(s)` };
     }
-    
+
     if (!this.matchDurationMinutes || this.matchDurationMinutes <= 0) {
       return { valid: false, message: 'Définissez une durée de match' };
     }
-    
+
     return { valid: true, message: 'Prêt à lancer !' };
   }
 
@@ -95,7 +94,6 @@ export class GameSetup {
     this.newPlayer = {
       firstName: '',
       lastName: '',
-      level: undefined,
     };
   }
 
@@ -162,13 +160,11 @@ export class GameSetup {
           const rowAny = row as any;
           const firstName = rowAny['prénom'] || rowAny['Prénom'] || rowAny['prenom'] || rowAny['Prenom'];
           const lastName = rowAny['nom'] || rowAny['Nom'];
-          const level = rowAny['niveau'] || rowAny['Niveau'] || rowAny['level'];
 
           if (firstName && lastName) {
             playersToAdd.push({
               firstName: String(firstName).trim(),
               lastName: String(lastName).trim(),
-              level: level ? Number(level) : undefined,
             });
           }
         }
@@ -192,7 +188,7 @@ export class GameSetup {
 
   startGame(): void {
     const players = this.playerService.getPlayers();
-    
+
     if (players.length < 2) {
       this.showMessage('Il faut au moins 2 joueurs pour commencer !');
       return;

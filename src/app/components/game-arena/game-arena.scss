@@ -1,7 +1,7 @@
 .arena-container {
   width: 100%;
   min-height: calc(100vh - 64px);
-  background-color: var(--bg-primary);
+  background: transparent;
   padding: 32px 24px;
   animation: fadeIn 0.4s ease-out;
 }
@@ -20,12 +20,43 @@
     text-align: center;
   }
 
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  .back-btn {
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--accent-primary);
+      background-color: rgba(56, 189, 248, 0.1);
+    }
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
   h1 {
     color: var(--text-primary);
     font-size: 1.75rem;
     font-weight: 700;
     margin: 0;
     letter-spacing: -0.025em;
+
+    @media (max-width: 640px) {
+      font-size: 1.25rem;
+    }
   }
 }
 
@@ -294,14 +325,33 @@
     .score-field {
       width: 100px;
 
-      ::ng-deep .mat-mdc-form-field-infix {
-        padding: 12px 0 !important;
-      }
+      ::ng-deep {
+        .mat-mdc-form-field-infix {
+          padding: 12px 0 !important;
+        }
 
-      input {
-        text-align: center;
-        font-weight: 700;
-        font-size: 1.25rem;
+        .mat-mdc-text-field-wrapper {
+          background-color: var(--bg-secondary);
+        }
+
+        .mdc-text-field--outlined {
+          --mdc-outlined-text-field-container-color: var(--bg-secondary);
+          --mdc-outlined-text-field-outline-color: var(--border-color);
+          --mdc-outlined-text-field-hover-outline-color: var(--accent-primary);
+          --mdc-outlined-text-field-focus-outline-color: var(--accent-primary);
+        }
+
+        .mat-mdc-form-field-label {
+          color: var(--text-secondary) !important;
+        }
+
+        input.mat-mdc-input-element {
+          text-align: center;
+          font-weight: 700;
+          font-size: 1.25rem;
+          color: var(--text-primary) !important;
+          caret-color: var(--accent-primary) !important;
+        }
       }
     }
 

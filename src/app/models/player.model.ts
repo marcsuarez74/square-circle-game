@@ -3,7 +3,6 @@ export interface Player {
   number: number;
   firstName: string;
   lastName: string;
-  level?: number;
   totalPoints: number;
   matchesPlayed: number;
   wins: number;
@@ -12,5 +11,4 @@ export interface Player {
 export interface PlayerForm {
   firstName: string;
   lastName: string;
-  level?: number;
 }

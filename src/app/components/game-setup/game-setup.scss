@@ -1,7 +1,7 @@
 .setup-container {
   width: 100%;
   min-height: calc(100vh - 64px);
-  background-color: var(--bg-primary);
+  background: transparent;
   transition: background-color var(--transition-speed) ease;
 }
 
@@ -99,13 +99,45 @@
 
 .player-form {
   display: grid;
-  grid-template-columns: 1fr 1fr 100px auto;
+  grid-template-columns: 1fr 1fr auto;
   gap: 16px;
   align-items: flex-start;
   margin-bottom: 24px;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+  }
+
+  mat-form-field {
+    ::ng-deep {
+      .mat-mdc-form-field-infix {
+        padding: 12px 0 !important;
+      }
+
+      .mat-mdc-text-field-wrapper {
+        background-color: var(--bg-secondary);
+      }
+
+      .mdc-text-field--outlined {
+        --mdc-outlined-text-field-container-color: var(--bg-secondary);
+        --mdc-outlined-text-field-outline-color: var(--border-color);
+        --mdc-outlined-text-field-hover-outline-color: var(--accent-primary);
+        --mdc-outlined-text-field-focus-outline-color: var(--accent-primary);
+      }
+
+      .mat-mdc-form-field-label {
+        color: var(--text-secondary) !important;
+      }
+
+      input.mat-mdc-input-element {
+        color: var(--text-primary) !important;
+        caret-color: var(--accent-primary) !important;
+      }
+
+      .mat-mdc-form-field-icon-prefix {
+        color: var(--text-muted);
+      }
+    }
   }
 
   button {

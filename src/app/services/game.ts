@@ -65,15 +65,15 @@ export class GameService {
   }
 
   assignPlayersToCourts(players: Player[]): void {
-    // Try to create balanced teams avoiding previous encounters
+    // Assign players respecting singles/doubles rules
     const assignments = this.createBalancedAssignments(players);
     
     this.state.courts = assignments.courts;
     this.state.waitingQueue = assignments.waitingQueue;
     
-    // Record encounters for each court
+    // Record encounters for each court (singles also record encounters)
     this.state.courts.forEach(court => {
-      if (court.players.length === 4) {
+      if (court.players.length >= 2) {
         this.recordCourtEncounters(court);
       }
     });
@@ -88,46 +88,55 @@ export class GameService {
     }));
     const waitingQueue: Player[] = [];
 
-    // Shuffle players with anti-repetition algorithm
+    // Shuffle players
     let availablePlayers = this.shuffleArray([...players]);
-    let attempts = 0;
-    const maxAttempts = 100;
+    const totalPlayers = availablePlayers.length;
 
-    while (attempts < maxAttempts) {
-      let validAssignment = true;
-      
-      // Try to fill courts
-      for (const court of courts) {
-        if (availablePlayers.length >= 4) {
-          const courtPlayers = this.selectBestTeam(availablePlayers, court.id);
-          
-          if (courtPlayers.length === 4) {
-            court.players = courtPlayers;
-            availablePlayers = availablePlayers.filter(p => !courtPlayers.find(cp => cp.id === p.id));
-          } else {
-            validAssignment = false;
-            break;
-          }
-        }
-      }
-
-      if (validAssignment) {
-        break;
-      }
-
-      // Retry with new shuffle
-      availablePlayers = this.shuffleArray([...players]);
-      attempts++;
+    // Case: Exactly 2 players -> 1 single
+    if (totalPlayers === 2) {
+      courts[0].players = availablePlayers.splice(0, 2);
+      return { courts, waitingQueue };
     }
 
-    // If anti-repetition failed after max attempts, fall back to random
-    if (attempts >= maxAttempts) {
-      availablePlayers = this.shuffleArray([...players]);
-      courts.forEach(court => {
-        if (availablePlayers.length >= 4) {
+    // Case: Odd number of players
+    // Remove 1 player to make it even if we can't fill all courts perfectly
+    const numCourts = courts.length;
+    const maxCapacity = numCourts * 4;
+    
+    // If odd number and we have enough courts, put 1 in waiting queue
+    if (totalPlayers % 2 === 1) {
+      // Put the last player in waiting queue
+      const lastPlayer = availablePlayers.pop()!;
+      waitingQueue.push(lastPlayer);
+    }
+
+    // Now we have an even number of players
+    // Strategy: Fill courts optimally (prioritize doubles, allow singles if needed)
+    let remainingPlayers = availablePlayers.length;
+    
+    for (let i = 0; i < numCourts && remainingPlayers > 0; i++) {
+      const court = courts[i];
+      
+      if (remainingPlayers >= 4) {
+        // Enough for a double
+        const team = this.selectBestTeam(availablePlayers, i + 1);
+        if (team.length === 4) {
+          court.players = team;
+          availablePlayers = availablePlayers.filter(p => !team.find(tp => tp.id === p.id));
+          remainingPlayers -= 4;
+        } else {
+          // Anti-repetition failed, take random 4
           court.players = availablePlayers.splice(0, 4);
+          remainingPlayers -= 4;
         }
-      });
+      } else if (remainingPlayers >= 2) {
+        // Not enough for double, but enough for single
+        // Only create single if it's exactly 2, or if we have no other courts to fill
+        // AND there won't be any 2v1 situation
+        const playersForSingle = availablePlayers.splice(0, 2);
+        court.players = playersForSingle;
+        remainingPlayers -= 2;
+      }
     }
 
     // Remaining players go to waiting queue
@@ -155,6 +164,21 @@ export class GameService {
     return [];
   }
 
+  private selectBestPair(players: Player[], courtId: number): Player[] {
+    // Try to select 2 players who haven't played together
+    for (let i = 0; i < players.length - 1; i++) {
+      for (let j = i + 1; j < players.length; j++) {
+        const pair = [players[i], players[j]];
+        
+        if (!this.playerService.havePlayedTogether(pair[0].id, pair[1].id)) {
+          return pair;
+        }
+      }
+    }
+    
+    return [];
+  }
+
   private isValidTeam(team: Player[], courtId: number): boolean {
     // Check if any pair in the team has played together before
     for (let i = 0; i < team.length; i++) {
@@ -168,9 +192,9 @@ export class GameService {
   }
 
   private recordCourtEncounters(court: Court): void {
-    if (court.players.length !== 4) return;
+    if (court.players.length !== 2 && court.players.length !== 4) return;
 
-    // Record all pairs on this court
+    // Record all pairs on this court (for both singles and doubles)
     for (let i = 0; i < court.players.length; i++) {
       for (let j = i + 1; j < court.players.length; j++) {
         this.playerService.recordEncounter(court.players[i].id, court.players[j].id);
@@ -178,11 +202,15 @@ export class GameService {
     }
 
     // Store assignment for history
-    const pairs = [];
-    for (let i = 0; i < 4; i += 2) {
-      pairs.push([court.players[i].id, court.players[i + 1].id]);
+    if (court.players.length === 4) {
+      const pairs = [];
+      for (let i = 0; i < 4; i += 2) {
+        pairs.push([court.players[i].id, court.players[i + 1].id]);
+      }
+      this.previousAssignments.set(court.id, pairs);
+    } else if (court.players.length === 2) {
+      this.previousAssignments.set(court.id, [[court.players[0].id, court.players[1].id]]);
     }
-    this.previousAssignments.set(court.id, pairs);
   }
 
   shufflePlayers(): void {
@@ -243,5 +271,22 @@ export class GameService {
     this.state.currentSet++;
     this.resetTimer();
     this.shufflePlayers();
+  }
+
+  resetGame(): void {
+    this.stopTimer();
+    this.state = {
+      courts: [],
+      waitingQueue: [],
+      isTimerRunning: false,
+      remainingTime: 0,
+      currentSet: 1,
+    };
+    this.config = {
+      numberOfCourts: 2,
+      matchDuration: 900,
+    };
+    this.previousAssignments.clear();
+    this.stateSubject.next({ ...this.state });
   }
 }
