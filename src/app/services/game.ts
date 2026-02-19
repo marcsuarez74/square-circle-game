@@ -292,19 +292,19 @@ export class GameService {
       ];
     }
 
-    // Sort by matches played (ascending) to prioritize those who played less
-    allPlayers.sort((a, b) => a.matchesPlayed - b.matchesPlayed);
-
-    // Get current waiting queue IDs for comparison
+    // Get previous distribution
+    const previousCourtPlayers = this.state.courts.flatMap((c) => c.players);
     const previousWaitingIds = new Set(this.state.waitingQueue.map((p) => p.id));
+    const previousCourtIds = new Set(previousCourtPlayers.map((p) => p.id));
 
-    // Assign players with priority rules
-    this.assignPlayersWithRotation(allPlayers, previousWaitingIds);
+    // Assign players with rotation logic
+    this.assignPlayersWithRotation(allPlayers, previousWaitingIds, previousCourtIds);
   }
 
   private assignPlayersWithRotation(
-    sortedPlayers: Player[],
-    previousWaitingIds: Set<string>
+    allPlayers: Player[],
+    previousWaitingIds: Set<string>,
+    previousCourtIds: Set<string>
   ): void {
     const courts: Court[] = this.state.courts.map((court) => ({
       ...court,
@@ -314,39 +314,79 @@ export class GameService {
 
     const numCourts = courts.length;
     const maxCapacity = numCourts * 4;
-    let availablePlayers = [...sortedPlayers];
 
-    // Phase 1: Manche 2 special rule - previous waiting players MUST play
+    // Manche 2: Full swap - waiting players play, playing players wait
     if (this.state.currentSet === 2 && previousWaitingIds.size > 0) {
-      // Separate previous waiting players from others
-      const mustPlayFirst = availablePlayers.filter((p) => previousWaitingIds.has(p.id));
-      const others = availablePlayers.filter((p) => !previousWaitingIds.has(p.id));
+      // Separate players by previous status
+      const mustPlayNow = allPlayers.filter((p) => previousWaitingIds.has(p.id));
+      const mustWaitNow = allPlayers.filter((p) => previousCourtIds.has(p.id));
 
-      // Prioritize must-play players
-      availablePlayers = [...mustPlayFirst, ...others];
-    }
+      // Calculate how many of the must-play players we can fit
+      let availableSlots = maxCapacity;
+      let playersToPlay: Player[] = [];
+      let remainingMustPlay = [...mustPlayNow];
 
-    // Phase 2: Fill courts prioritizing players with fewer matches
-    let remainingPlayers = availablePlayers.length;
+      // Fill with must-play players first
+      for (let i = 0; i < numCourts && remainingMustPlay.length > 0; i++) {
+        const court = courts[i];
 
-    for (let i = 0; i < numCourts && remainingPlayers > 0; i++) {
-      const court = courts[i];
-
-      if (remainingPlayers >= 4) {
-        // Take 4 players (already sorted by matchesPlayed)
-        const team = availablePlayers.splice(0, 4);
-        court.players = team;
-        remainingPlayers -= 4;
-      } else if (remainingPlayers >= 2) {
-        // Take 2 players for a single
-        const playersForSingle = availablePlayers.splice(0, 2);
-        court.players = playersForSingle;
-        remainingPlayers -= 2;
+        if (remainingMustPlay.length >= 4) {
+          court.players = remainingMustPlay.splice(0, 4);
+          availableSlots -= 4;
+        } else if (remainingMustPlay.length >= 2) {
+          court.players = remainingMustPlay.splice(0, 2);
+          availableSlots -= 2;
+        } else if (remainingMustPlay.length === 1) {
+          // Odd player - put in waiting queue
+          break;
+        }
       }
-    }
 
-    // Remaining players go to waiting queue
-    waitingQueue.push(...availablePlayers);
+      // If there are remaining slots after placing must-play players
+      // and we have more players available, fill them
+      const remainingPlayers = allPlayers.filter(
+        (p) => !courts.some((c) => c.players.some((cp) => cp.id === p.id))
+      );
+
+      for (let i = 0; i < numCourts; i++) {
+        const court = courts[i];
+        if (remainingPlayers.length === 0) break;
+
+        if (court.players.length === 0) {
+          if (remainingPlayers.length >= 4) {
+            court.players = remainingPlayers.splice(0, 4);
+          } else if (remainingPlayers.length >= 2) {
+            court.players = remainingPlayers.splice(0, 2);
+          }
+        } else if (court.players.length === 2 && remainingPlayers.length >= 2) {
+          // Single can become double
+          court.players = [...court.players, ...remainingPlayers.splice(0, 2)];
+        }
+      }
+
+      // Everyone else goes to waiting queue
+      waitingQueue.push(
+        ...allPlayers.filter(
+          (p) => !courts.some((c) => c.players.some((cp) => cp.id === p.id))
+        )
+      );
+    } else {
+      // Manche 3+: Sort by matches played and fill courts
+      allPlayers.sort((a, b) => a.matchesPlayed - b.matchesPlayed);
+      let availablePlayers = [...allPlayers];
+
+      for (let i = 0; i < numCourts && availablePlayers.length > 0; i++) {
+        const court = courts[i];
+
+        if (availablePlayers.length >= 4) {
+          court.players = availablePlayers.splice(0, 4);
+        } else if (availablePlayers.length >= 2) {
+          court.players = availablePlayers.splice(0, 2);
+        }
+      }
+
+      waitingQueue.push(...availablePlayers);
+    }
 
     // Update state
     this.state.courts = courts;
