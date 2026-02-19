@@ -145,14 +145,38 @@ export const GameStore = signalStore(
 
     // Export game as JSON
     exportToJSON(): void {
-      const state = {
-        exportDate: new Date().toISOString(),
-        gameState: store.gameState(),
-        players: store.players(),
-        matchScores: store.matchScores(),
-      };
+      // First persist to ensure data is saved
+      this.persistToStorage();
+      
+      // Read from localStorage to get the latest persisted data
+      const saved = localStorage.getItem('square-circle-game');
+      let exportData;
+      
+      if (saved) {
+        try {
+          const persistedState = JSON.parse(saved);
+          exportData = {
+            exportDate: new Date().toISOString(),
+            gameState: persistedState.gameState,
+            players: persistedState.players,
+            matchScores: persistedState.matchScores,
+          };
+        } catch (e) {
+          console.error('Failed to parse saved state', e);
+        }
+      }
+      
+      // Fallback to current store if localStorage fails
+      if (!exportData) {
+        exportData = {
+          exportDate: new Date().toISOString(),
+          gameState: store.gameState(),
+          players: store.players(),
+          matchScores: store.matchScores(),
+        };
+      }
 
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
