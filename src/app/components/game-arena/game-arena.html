@@ -1,4 +1,4 @@
-@if (gameState) {
+@if (gameState(); as state) {
   <div class="arena-container">
     <!-- Header avec timer et contrôles -->
     <div class="arena-header">
@@ -11,25 +11,25 @@
         >
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <h1>Ronde des Carrés - Manche {{ gameState.currentSet }}</h1>
+        <h1>Ronde des Carrés - Manche {{ currentSet() }}</h1>
       </div>
 
       <div class="timer-section">
         <div
           class="timer-display"
-          [class.running]="gameState.isTimerRunning && gameState.remainingTime > 60"
+          [class.running]="isTimerRunning() && remainingTime() > 60"
           [class.warning]="
-            gameState.isTimerRunning &&
-            gameState.remainingTime <= 60 &&
-            gameState.remainingTime > 30
+            isTimerRunning() &&
+            remainingTime() <= 60 &&
+            remainingTime() > 30
           "
-          [class.danger]="gameState.isTimerRunning && gameState.remainingTime <= 30"
+          [class.danger]="isTimerRunning() && remainingTime() <= 30"
         >
-          {{ formatTime(gameState.remainingTime) }}
+          {{ formatTime(remainingTime()) }}
         </div>
 
         <div class="timer-controls">
-          @if (!gameState.isTimerRunning) {
+          @if (!isTimerRunning()) {
             <button mat-raised-button color="primary" (click)="startRound()">
               <mat-icon>play_arrow</mat-icon>
               Déclencher la manche
@@ -46,7 +46,7 @@
 
     <!-- Terrains -->
     <div class="courts-grid">
-      @for (court of gameState.courts; track court.id) {
+      @for (court of state.courts; track court.id) {
         <mat-card class="court-card">
           <mat-card-header>
             <mat-card-title>
@@ -96,7 +96,7 @@
                     <input
                       matInput
                       type="number"
-                      [value]="matchScores[court.id]?.team1 || 0"
+                      [value]="matchScores()[court.id]?.team1 || 0"
                       (change)="updateScore(court.id, 'team1', +$any($event.target).value)"
                     />
                   </mat-form-field>
@@ -108,7 +108,7 @@
                     <input
                       matInput
                       type="number"
-                      [value]="matchScores[court.id]?.team2 || 0"
+                      [value]="matchScores()[court.id]?.team2 || 0"
                       (change)="updateScore(court.id, 'team2', +$any($event.target).value)"
                     />
                   </mat-form-field>
@@ -121,17 +121,17 @@
     </div>
 
     <!-- File d'attente -->
-    @if (gameState.waitingQueue.length > 0) {
+    @if (state.waitingQueue.length > 0) {
       <mat-card class="waiting-card">
         <mat-card-header>
           <mat-card-title>
             <mat-icon>queue</mat-icon>
-            File d'attente ({{ gameState.waitingQueue.length }} joueurs)
+            File d'attente ({{ state.waitingQueue.length }} joueurs)
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="waiting-players-list">
-            @for (player of gameState.waitingQueue; track player.id) {
+            @for (player of state.waitingQueue; track player.id) {
               <span class="waiting-player">
                 N°{{ player.number }} - {{ getPlayerDisplayName(player) }}
               </span>
@@ -148,7 +148,7 @@
         Mélanger les joueurs
       </button>
 
-      <button mat-stroked-button (click)="nextRound()" [disabled]="gameState.isTimerRunning">
+      <button mat-stroked-button (click)="nextRound()" [disabled]="isTimerRunning()">
         <mat-icon>skip_next</mat-icon>
         Manche suivante
       </button>
