@@ -1,0 +1,21 @@
+<header class="app-header">
+  <div class="header-content">
+    <div class="logo">
+      <span class="logo-icon">🏸</span>
+      <span class="logo-text">La Ronde des Carrés</span>
+    </div>
+
+    <button
+      class="theme-toggle"
+      (click)="themeService.toggle()"
+      [attr.aria-label]="themeService.isDark() ? 'Passer en mode clair' : 'Passer en mode sombre'">
+      <span class="theme-icon" [class.rotate]="themeService.isDark()">
+        {{ themeService.isDark() ? '🌙' : '☀️' }}
+      </span>
+    </button>
+  </div>
+</header>
+
+<main class="app-main">
+  <router-outlet />
+</main>

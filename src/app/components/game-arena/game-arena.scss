@@ -1,0 +1,529 @@
+.arena-container {
+  width: 100%;
+  min-height: calc(100vh - 64px);
+  background-color: var(--bg-primary);
+  padding: 32px 24px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.arena-header {
+  max-width: 1400px;
+  margin: 0 auto 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  h1 {
+    color: var(--text-primary);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.025em;
+  }
+}
+
+.timer-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.timer-display {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 3rem;
+  font-weight: 700;
+  padding: 16px 32px;
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+  min-width: 200px;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  @media (max-width: 640px) {
+    font-size: 2.5rem;
+    padding: 14px 24px;
+    min-width: 160px;
+  }
+
+  &.running {
+    background-color: var(--bg-card);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    animation: timerPulse 1.5s ease-in-out infinite, timerGlow 2s ease-in-out infinite;
+  }
+
+  &.warning {
+    border-color: var(--warning);
+    color: var(--warning);
+    animation: timerPulse 1s ease-in-out infinite, timerGlowWarning 1.5s ease-in-out infinite;
+  }
+
+  &.danger {
+    border-color: var(--error);
+    color: var(--error);
+    animation: timerPulse 0.5s ease-in-out infinite, timerGlowDanger 1s ease-in-out infinite;
+  }
+}
+
+@keyframes timerPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes timerGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.5), 0 0 50px rgba(56, 189, 248, 0.3);
+  }
+}
+
+@keyframes timerGlowWarning {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.5), 0 0 50px rgba(245, 158, 11, 0.3);
+  }
+}
+
+@keyframes timerGlowDanger {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.5), 0 0 50px rgba(239, 68, 68, 0.3);
+  }
+}
+
+.timer-controls {
+  display: flex;
+  gap: 12px;
+
+  button {
+    height: 56px;
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+.courts-grid {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.court-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-card);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  animation: slideIn 0.4s ease-out;
+
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.05}s;
+    }
+  }
+
+  &:hover {
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-4px);
+  }
+
+  mat-card-header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px 20px;
+
+    mat-card-title {
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+
+      mat-icon {
+        color: var(--accent-primary);
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
+      }
+    }
+  }
+
+  mat-card-content {
+    padding: 20px;
+  }
+}
+
+.court-visual {
+  margin-bottom: 20px;
+
+  .court-rectangle {
+    aspect-ratio: 2/1;
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .net {
+    position: absolute;
+    left: 50%;
+    top: 10%;
+    bottom: 10%;
+    width: 2px;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--accent-primary) 0px,
+      var(--accent-primary) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+    transform: translateX(-50%);
+    opacity: 0.6;
+  }
+
+  .team {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+
+    &.team-1 {
+      align-items: flex-start;
+    }
+
+    &.team-2 {
+      align-items: flex-end;
+    }
+
+    .player {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--accent-primary);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .player-number {
+        width: 32px;
+        height: 32px;
+        background-color: var(--accent-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+        flex-shrink: 0;
+      }
+
+      .player-name {
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 0.9375rem;
+      }
+    }
+  }
+}
+
+.score-section {
+  margin-top: 16px;
+
+  .score-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+
+    .score-field {
+      width: 100px;
+
+      ::ng-deep .mat-mdc-form-field-infix {
+        padding: 12px 0 !important;
+      }
+
+      input {
+        text-align: center;
+        font-weight: 700;
+        font-size: 1.25rem;
+      }
+    }
+
+    .vs {
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+  }
+}
+
+.waiting-players {
+  text-align: center;
+  padding: 24px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius-sm);
+  border: 1px dashed var(--border-color);
+
+  p {
+    color: var(--text-muted);
+    margin: 0 0 12px 0;
+    font-size: 0.9375rem;
+  }
+
+  .player-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+
+    .player-chip {
+      padding: 8px 14px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--accent-primary);
+        color: var(--accent-primary);
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+.waiting-card {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-card);
+  animation: fadeIn 0.4s ease-out 0.3s both;
+
+  mat-card-header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px 20px;
+
+    mat-card-title {
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      mat-icon {
+        color: var(--warning);
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
+      }
+    }
+  }
+
+  mat-card-content {
+    padding: 20px;
+  }
+
+  .waiting-players-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    .waiting-player {
+      padding: 10px 16px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      color: var(--text-primary);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--warning);
+        background-color: rgba(245, 158, 11, 0.1);
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+.arena-controls {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  button {
+    height: 48px;
+    padding: 0 24px;
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+/* Animations des cartes au chargement */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .arena-container {
+    padding: 24px 20px;
+  }
+
+  .timer-display {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .arena-container {
+    padding: 20px 16px;
+  }
+
+  .arena-header {
+    margin-bottom: 24px;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .timer-display {
+    font-size: 2rem;
+    padding: 12px 20px;
+    min-width: 140px;
+  }
+
+  .court-card {
+    mat-card-content {
+      padding: 16px;
+    }
+  }
+
+  .court-visual {
+    .court-rectangle {
+      padding: 12px;
+    }
+
+    .team .player {
+      padding: 8px 10px;
+
+      .player-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+      }
+
+      .player-name {
+        font-size: 0.8125rem;
+      }
+    }
+  }
+
+  .score-section .score-inputs {
+    gap: 12px;
+
+    .vs {
+      font-size: 0.875rem;
+    }
+  }
+}
