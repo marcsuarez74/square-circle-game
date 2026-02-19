@@ -238,12 +238,12 @@ export class GameArena implements OnInit, OnDestroy {
       message: 'Vous allez quitter la partie en cours. Toute progression sera perdue.',
       confirmText: 'Quitter',
       cancelText: 'Annuler',
-      type: 'warning'
+      type: 'warning',
     };
 
     const dialogRef = this.dialog.open(ConfirmDialog, {
       data: dialogData,
-      disableClose: true
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {

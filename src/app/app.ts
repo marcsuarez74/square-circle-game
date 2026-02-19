@@ -10,16 +10,16 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './app.html',
   styleUrl: './app.scss',
   standalone: true,
-  imports: [RouterOutlet, MatButtonModule, MatIconModule]
+  imports: [RouterOutlet, MatButtonModule, MatIconModule],
 })
 export class App {
   protected readonly title = 'square-circle-game';
   themeService = inject(ThemeService);
-  
+
   isThemeSelectorOpen = signal<boolean>(false);
 
   toggleThemeSelector(): void {
-    this.isThemeSelectorOpen.update(open => !open);
+    this.isThemeSelectorOpen.update((open) => !open);
   }
 
   selectTheme(themeId: SeasonalTheme): void {

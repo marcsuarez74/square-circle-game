@@ -7,8 +7,9 @@
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
   z-index: 1000;
-  transition: background-color var(--transition-speed) ease,
-              border-color var(--transition-speed) ease;
+  transition:
+    background-color var(--transition-speed) ease,
+    border-color var(--transition-speed) ease;
 }
 
 .header-content {
@@ -73,7 +74,7 @@
   .current-theme-name {
     font-size: 0.875rem;
     font-weight: 500;
-    
+
     @media (max-width: 480px) {
       display: none;
     }

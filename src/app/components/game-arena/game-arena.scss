@@ -94,24 +94,31 @@
     background-color: var(--bg-card);
     border-color: var(--accent-primary);
     color: var(--accent-primary);
-    animation: timerPulse 1.5s ease-in-out infinite, timerGlow 2s ease-in-out infinite;
+    animation:
+      timerPulse 1.5s ease-in-out infinite,
+      timerGlow 2s ease-in-out infinite;
   }
 
   &.warning {
     border-color: var(--warning);
     color: var(--warning);
-    animation: timerPulse 1s ease-in-out infinite, timerGlowWarning 1.5s ease-in-out infinite;
+    animation:
+      timerPulse 1s ease-in-out infinite,
+      timerGlowWarning 1.5s ease-in-out infinite;
   }
 
   &.danger {
     border-color: var(--error);
     color: var(--error);
-    animation: timerPulse 0.5s ease-in-out infinite, timerGlowDanger 1s ease-in-out infinite;
+    animation:
+      timerPulse 0.5s ease-in-out infinite,
+      timerGlowDanger 1s ease-in-out infinite;
   }
 }
 
 @keyframes timerPulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -120,29 +127,38 @@
 }
 
 @keyframes timerGlow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
   }
   50% {
-    box-shadow: 0 0 30px rgba(56, 189, 248, 0.5), 0 0 50px rgba(56, 189, 248, 0.3);
+    box-shadow:
+      0 0 30px rgba(56, 189, 248, 0.5),
+      0 0 50px rgba(56, 189, 248, 0.3);
   }
 }
 
 @keyframes timerGlowWarning {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
   }
   50% {
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.5), 0 0 50px rgba(245, 158, 11, 0.3);
+    box-shadow:
+      0 0 30px rgba(245, 158, 11, 0.5),
+      0 0 50px rgba(245, 158, 11, 0.3);
   }
 }
 
 @keyframes timerGlowDanger {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
   }
   50% {
-    box-shadow: 0 0 30px rgba(239, 68, 68, 0.5), 0 0 50px rgba(239, 68, 68, 0.3);
+    box-shadow:
+      0 0 30px rgba(239, 68, 68, 0.5),
+      0 0 50px rgba(239, 68, 68, 0.3);
   }
 }
 
