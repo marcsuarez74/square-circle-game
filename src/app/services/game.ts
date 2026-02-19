@@ -262,10 +262,97 @@ export class GameService {
     return shuffled;
   }
 
-  nextRound(): void {
+  nextRound(updatedPlayers?: Player[]): void {
     this.state.currentSet++;
     this.resetTimer();
-    this.shufflePlayers();
+    
+    // Rotate players with fair distribution logic
+    this.rotatePlayers(updatedPlayers);
+  }
+
+  private rotatePlayers(updatedPlayers?: Player[]): void {
+    // Use updated players from store if provided, otherwise use local state
+    let allPlayers: Player[];
+    
+    if (updatedPlayers) {
+      // Map updated players to current court/waiting distribution
+      const courtPlayerIds = new Set(
+        this.state.courts.flatMap((c) => c.players.map((p) => p.id))
+      );
+      const waitingIds = new Set(this.state.waitingQueue.map((p) => p.id));
+      
+      const courtPlayers = updatedPlayers.filter((p) => courtPlayerIds.has(p.id));
+      const waitingPlayers = updatedPlayers.filter((p) => waitingIds.has(p.id));
+      
+      allPlayers = [...courtPlayers, ...waitingPlayers];
+    } else {
+      allPlayers = [
+        ...this.state.courts.flatMap((c) => c.players),
+        ...this.state.waitingQueue,
+      ];
+    }
+
+    // Sort by matches played (ascending) to prioritize those who played less
+    allPlayers.sort((a, b) => a.matchesPlayed - b.matchesPlayed);
+
+    // Get current waiting queue IDs for comparison
+    const previousWaitingIds = new Set(this.state.waitingQueue.map((p) => p.id));
+
+    // Assign players with priority rules
+    this.assignPlayersWithRotation(allPlayers, previousWaitingIds);
+  }
+
+  private assignPlayersWithRotation(
+    sortedPlayers: Player[],
+    previousWaitingIds: Set<string>
+  ): void {
+    const courts: Court[] = this.state.courts.map((court) => ({
+      ...court,
+      players: [],
+    }));
+    const waitingQueue: Player[] = [];
+
+    const numCourts = courts.length;
+    const maxCapacity = numCourts * 4;
+    let availablePlayers = [...sortedPlayers];
+
+    // Phase 1: Manche 2 special rule - previous waiting players MUST play
+    if (this.state.currentSet === 2 && previousWaitingIds.size > 0) {
+      // Separate previous waiting players from others
+      const mustPlayFirst = availablePlayers.filter((p) => previousWaitingIds.has(p.id));
+      const others = availablePlayers.filter((p) => !previousWaitingIds.has(p.id));
+
+      // Prioritize must-play players
+      availablePlayers = [...mustPlayFirst, ...others];
+    }
+
+    // Phase 2: Fill courts prioritizing players with fewer matches
+    let remainingPlayers = availablePlayers.length;
+
+    for (let i = 0; i < numCourts && remainingPlayers > 0; i++) {
+      const court = courts[i];
+
+      if (remainingPlayers >= 4) {
+        // Take 4 players (already sorted by matchesPlayed)
+        const team = availablePlayers.splice(0, 4);
+        court.players = team;
+        remainingPlayers -= 4;
+      } else if (remainingPlayers >= 2) {
+        // Take 2 players for a single
+        const playersForSingle = availablePlayers.splice(0, 2);
+        court.players = playersForSingle;
+        remainingPlayers -= 2;
+      }
+    }
+
+    // Remaining players go to waiting queue
+    waitingQueue.push(...availablePlayers);
+
+    // Update state
+    this.state.courts = courts;
+    this.state.waitingQueue = waitingQueue;
+
+    this.stateSubject.next({ ...this.state });
   }
 
   resetGame(): void {

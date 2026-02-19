@@ -136,7 +136,8 @@ export class GameArena implements OnInit, OnDestroy {
 
   nextRound(): void {
     this.saveMatchResults();
-    this.gameService.nextRound();
+    // Pass updated players with fresh matchesPlayed data
+    this.gameService.nextRound(this.players());
     this.store.resetMatchScores();
     // Sync game state from service to store
     this.store.setGameState(this.gameService.getCurrentState());
@@ -245,13 +246,13 @@ export class GameArena implements OnInit, OnDestroy {
   }
 
   endGame(): void {
-    // Save final results
+    // Save final results to store
     this.saveMatchResults();
 
-    // Clear saved game
-    this.store.clearStorage();
+    // Persist to localStorage before export
+    this.store.persistToStorage();
 
-    // Export final results
+    // Export final results (will read from localStorage)
     this.store.exportToJSON();
 
     const allPlayers = this.players();
@@ -259,6 +260,9 @@ export class GameArena implements OnInit, OnDestroy {
 
     console.log('Classement final:', rankings);
     this.showMessage('Partie terminée ! Résultats exportés.');
+
+    // Clear saved game after export
+    this.store.clearStorage();
 
     // Navigate back to setup after a delay
     setTimeout(() => {
