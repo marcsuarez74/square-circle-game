@@ -327,7 +327,9 @@ export class GameService {
       let remainingMustPlay = [...mustPlayNow];
 
       // Fill with must-play players first
-      for (let i = 0; i < numCourts && remainingMustPlay.length > 0; i++) {
+      for (let i = 0; i < numCourts; i++) {
+        if (remainingMustPlay.length === 0) break;
+        
         const court = courts[i];
 
         if (remainingMustPlay.length >= 4) {
@@ -344,7 +346,7 @@ export class GameService {
 
       // If there are remaining slots after placing must-play players
       // and we have more players available, fill them
-      const remainingPlayers = allPlayers.filter(
+      let remainingPlayers = allPlayers.filter(
         (p) => !courts.some((c) => c.players.some((cp) => cp.id === p.id))
       );
 
@@ -357,6 +359,9 @@ export class GameService {
             court.players = remainingPlayers.splice(0, 4);
           } else if (remainingPlayers.length >= 2) {
             court.players = remainingPlayers.splice(0, 2);
+          } else if (remainingPlayers.length === 1) {
+            // Single player - put in waiting queue
+            break;
           }
         } else if (court.players.length === 2 && remainingPlayers.length >= 2) {
           // Single can become double
@@ -373,6 +378,7 @@ export class GameService {
     } else {
       // Manche 3+: Sort by matches played and fill courts
       allPlayers.sort((a, b) => a.matchesPlayed - b.matchesPlayed);
+      
       let availablePlayers = [...allPlayers];
 
       for (let i = 0; i < numCourts && availablePlayers.length > 0; i++) {
