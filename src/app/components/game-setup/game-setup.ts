@@ -60,7 +60,7 @@ export class GameSetup {
   isDragging = false;
 
   // Timer presets
-  timerPresets = [0.5, 10, 15, 20, 25, 30];
+  timerPresets = [0.5, 3, 5, 10];
 
   get isFormValid(): boolean {
     const players = this.playerService.getPlayers();

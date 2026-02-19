@@ -53,9 +53,7 @@ export class GameArena implements OnInit, OnDestroy {
   protected isTimerRunning = this.store.isTimerRunning;
   protected remainingTime = this.store.remainingTime;
   protected currentSet = this.store.currentSet;
-  protected courtCount = this.store.courtCount;
   protected waitingPlayers = this.store.waitingPlayers;
-  protected sortedPlayers = this.store.sortedPlayers;
   protected isGameActive = this.store.isGameActive;
 
   isRankingPanelVisible = signal(false);
