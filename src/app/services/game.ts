@@ -265,7 +265,7 @@ export class GameService {
   nextRound(updatedPlayers?: Player[]): void {
     this.state.currentSet++;
     this.resetTimer();
-    
+
     // Rotate players with fair distribution logic
     this.rotatePlayers(updatedPlayers);
   }
@@ -273,23 +273,18 @@ export class GameService {
   private rotatePlayers(updatedPlayers?: Player[]): void {
     // Use updated players from store if provided, otherwise use local state
     let allPlayers: Player[];
-    
+
     if (updatedPlayers) {
       // Map updated players to current court/waiting distribution
-      const courtPlayerIds = new Set(
-        this.state.courts.flatMap((c) => c.players.map((p) => p.id))
-      );
+      const courtPlayerIds = new Set(this.state.courts.flatMap((c) => c.players.map((p) => p.id)));
       const waitingIds = new Set(this.state.waitingQueue.map((p) => p.id));
-      
+
       const courtPlayers = updatedPlayers.filter((p) => courtPlayerIds.has(p.id));
       const waitingPlayers = updatedPlayers.filter((p) => waitingIds.has(p.id));
-      
+
       allPlayers = [...courtPlayers, ...waitingPlayers];
     } else {
-      allPlayers = [
-        ...this.state.courts.flatMap((c) => c.players),
-        ...this.state.waitingQueue,
-      ];
+      allPlayers = [...this.state.courts.flatMap((c) => c.players), ...this.state.waitingQueue];
     }
 
     // Get previous distribution
@@ -304,7 +299,7 @@ export class GameService {
   private assignPlayersWithRotation(
     allPlayers: Player[],
     previousWaitingIds: Set<string>,
-    previousCourtIds: Set<string>
+    previousCourtIds: Set<string>,
   ): void {
     const courts: Court[] = this.state.courts.map((court) => ({
       ...court,
@@ -329,7 +324,7 @@ export class GameService {
       // Fill with must-play players first
       for (let i = 0; i < numCourts; i++) {
         if (remainingMustPlay.length === 0) break;
-        
+
         const court = courts[i];
 
         if (remainingMustPlay.length >= 4) {
@@ -347,7 +342,7 @@ export class GameService {
       // If there are remaining slots after placing must-play players
       // and we have more players available, fill them
       let remainingPlayers = allPlayers.filter(
-        (p) => !courts.some((c) => c.players.some((cp) => cp.id === p.id))
+        (p) => !courts.some((c) => c.players.some((cp) => cp.id === p.id)),
       );
 
       for (let i = 0; i < numCourts; i++) {
@@ -371,14 +366,12 @@ export class GameService {
 
       // Everyone else goes to waiting queue
       waitingQueue.push(
-        ...allPlayers.filter(
-          (p) => !courts.some((c) => c.players.some((cp) => cp.id === p.id))
-        )
+        ...allPlayers.filter((p) => !courts.some((c) => c.players.some((cp) => cp.id === p.id))),
       );
     } else {
       // Manche 3+: Sort by matches played and fill courts
       allPlayers.sort((a, b) => a.matchesPlayed - b.matchesPlayed);
-      
+
       let availablePlayers = [...allPlayers];
 
       for (let i = 0; i < numCourts && availablePlayers.length > 0; i++) {
