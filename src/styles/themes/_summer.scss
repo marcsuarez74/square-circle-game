@@ -1,0 +1,22 @@
+/* Summer - Sun rays and waves */
+body.theme-summer::before {
+  background:
+    radial-gradient(circle at 80% 20%, rgba(251, 191, 36, 0.3) 0%, transparent 30%),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 50px,
+      rgba(56, 189, 248, 0.1) 50px,
+      rgba(56, 189, 248, 0.1) 100px
+    );
+  animation: sunWaves 10s ease-in-out infinite;
+}
+
+@keyframes sunWaves {
+  0%, 100% {
+    background-position: 0 0, 0 0;
+  }
+  50% {
+    background-position: 0 0, 100px 0;
+  }
+}

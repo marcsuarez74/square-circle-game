@@ -1,0 +1,57 @@
+/* Christmas - Falling snowflakes */
+body.theme-christmas::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Ccircle cx='15' cy='15' r='3' fill='white' opacity='0.8'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='2' fill='white' opacity='0.6'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25'%3E%3Ccircle cx='12.5' cy='12.5' r='2.5' fill='white' opacity='0.7'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15'%3E%3Ccircle cx='7.5' cy='7.5' r='1.5' fill='white' opacity='0.5'/%3E%3C/svg%3E");
+  background-size:
+    80px 80px,
+    60px 60px,
+    50px 50px,
+    40px 40px;
+  background-position:
+    0 0,
+    100px 50px,
+    200px 100px,
+    300px 150px;
+  animation: snowfallflakes 12s linear infinite;
+}
+
+@keyframes snowfallflakes {
+  0% {
+    background-position:
+      0 0,
+      100px 50px,
+      200px 100px,
+      300px 150px;
+  }
+  25% {
+    background-position:
+      15px 30vh,
+      115px calc(50px + 25vh),
+      180px calc(100px + 25vh),
+      320px calc(150px + 25vh);
+  }
+  50% {
+    background-position:
+      -10px 60vh,
+      90px calc(50px + 50vh),
+      220px calc(100px + 50vh),
+      280px calc(150px + 50vh);
+  }
+  75% {
+    background-position:
+      20px 90vh,
+      110px calc(50px + 75vh),
+      190px calc(100px + 75vh),
+      310px calc(150px + 75vh);
+  }
+  100% {
+    background-position:
+      0 120vh,
+      100px calc(50px + 120vh),
+      200px calc(100px + 120vh),
+      300px calc(150px + 120vh);
+  }
+}

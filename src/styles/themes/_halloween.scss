@@ -1,0 +1,19 @@
+/* Halloween - Fog and floating pumpkins */
+body.theme-halloween::before {
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(249, 115, 22, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 80%, rgba(124, 45, 18, 0.3) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 80%, rgba(108, 63, 42, 0.3) 0%, transparent 40%);
+  animation: fog 8s ease-in-out infinite;
+}
+
+@keyframes fog {
+  0%, 100% {
+    opacity: 0.1;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 0.2;
+    transform: translateX(20px);
+  }
+}

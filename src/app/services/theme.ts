@@ -76,8 +76,13 @@ export class ThemeService {
       body.classList.remove('dark', 'light');
     }
     
-    // Apply CSS custom properties
-    this.applyThemeColors(theme);
+    // Apply CSS custom properties (only for seasonal themes)
+    if (seasonalTheme !== 'default') {
+      this.applyThemeColors(theme);
+    } else {
+      // For default theme, reset to CSS variables defined in styles.scss
+      this.resetThemeColors();
+    }
   }
 
   private applyThemeColors(theme: ThemeDefinition): void {
@@ -100,5 +105,28 @@ export class ThemeService {
     root.style.setProperty('--error', theme.colors.error);
     root.style.setProperty('--info', theme.colors.info);
     root.style.setProperty('--theme-gradient', theme.gradient);
+  }
+
+  private resetThemeColors(): void {
+    const root = document.documentElement;
+    
+    // Remove inline styles to let CSS classes (.dark/.light) take over
+    root.style.removeProperty('--bg-primary');
+    root.style.removeProperty('--bg-secondary');
+    root.style.removeProperty('--bg-tertiary');
+    root.style.removeProperty('--bg-card');
+    root.style.removeProperty('--bg-hover');
+    root.style.removeProperty('--text-primary');
+    root.style.removeProperty('--text-secondary');
+    root.style.removeProperty('--text-muted');
+    root.style.removeProperty('--border-color');
+    root.style.removeProperty('--accent-primary');
+    root.style.removeProperty('--accent-hover');
+    root.style.removeProperty('--accent-glow');
+    root.style.removeProperty('--success');
+    root.style.removeProperty('--warning');
+    root.style.removeProperty('--error');
+    root.style.removeProperty('--info');
+    root.style.removeProperty('--theme-gradient');
   }
 }
