@@ -17,11 +17,13 @@ concurrency:
 
 jobs:
   format:
-    name: Format Check
+    name: Format & Auto-fix
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,8 +34,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check format
-        run: npx prettier --check "src/**/*.{ts,html,scss,css,json,md}"
+      - name: Format code with Prettier
+        run: npx prettier --write "src/**/*.{ts,html,scss,css,json,md}" "*.json" "*.md"
+
+      - name: Commit formatting changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Apply prettier formatting" && git push)
 
   lint:
     name: Lint Check
