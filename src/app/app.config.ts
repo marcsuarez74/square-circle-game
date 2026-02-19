@@ -10,7 +10,7 @@ import { GameStore } from './store/game.store';
 const routes: Routes = [
   { path: '', component: GameSetup },
   { path: 'game', component: GameArena },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];
 
 export const appConfig: ApplicationConfig = {
@@ -19,6 +19,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     provideHttpClient(),
-    GameStore
-  ]
+    GameStore,
+  ],
 };

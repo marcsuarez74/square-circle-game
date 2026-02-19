@@ -4,7 +4,8 @@
     class="ranking-trigger"
     (click)="isVisible ? onClose() : null"
     [class.active]="isVisible"
-    *ngIf="!isVisible">
+    *ngIf="!isVisible"
+  >
     <mat-icon>emoji_events</mat-icon>
   </button>
 
@@ -13,10 +14,7 @@
     <div class="ranking-header">
       <h2>Classement</h2>
       <div class="header-actions">
-        <button
-          class="export-btn"
-          (click)="onExport()"
-          matTooltip="Exporter la partie">
+        <button class="export-btn" (click)="onExport()" matTooltip="Exporter la partie">
           <mat-icon>download</mat-icon>
           <span>Exporter</span>
         </button>
@@ -47,7 +45,9 @@
             </div>
             <div class="player-info">
               <span class="player-name">{{ getPlayerDisplayName(player) }}</span>
-              <span class="player-stats">{{ player.wins }} Victoire / {{ player.matchesPlayed }} Match joué</span>
+              <span class="player-stats"
+                >{{ player.wins }} Victoire / {{ player.matchesPlayed }} Match joué</span
+              >
             </div>
             <div class="score">{{ getPlayerTotalPoints(player) }} pts</div>
           </div>

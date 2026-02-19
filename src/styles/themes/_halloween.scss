@@ -8,7 +8,8 @@ body.theme-halloween::before {
 }
 
 @keyframes fog {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.1;
     transform: translateX(0);
   }
