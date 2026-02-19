@@ -157,6 +157,21 @@
         <mat-icon>flag</mat-icon>
         Terminer la partie
       </button>
+
+      <button 
+        mat-fab 
+        color="primary" 
+        class="ranking-toggle-btn"
+        (click)="toggleRankingPanel()"
+        matTooltip="Voir le classement">
+        <mat-icon>emoji_events</mat-icon>
+      </button>
     </div>
   </div>
+
+  <!-- Ranking Panel -->
+  <app-ranking-panel 
+    [isVisible]="isRankingPanelVisible()"
+    (close)="hideRankingPanel()">
+  </app-ranking-panel>
 }

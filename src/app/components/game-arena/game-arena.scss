@@ -515,6 +515,44 @@
       margin-right: 8px;
     }
   }
+
+  .ranking-toggle-btn {
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100;
+    box-shadow: var(--shadow-lg), 0 0 0 4px var(--accent-glow);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: var(--shadow-lg), 0 0 20px var(--accent-glow);
+    }
+
+    mat-icon {
+      margin: 0;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    @media (max-width: 640px) {
+      width: 48px;
+      height: 48px;
+      bottom: 16px;
+      right: 16px;
+
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
 }
 
 /* Animations des cartes au chargement */
