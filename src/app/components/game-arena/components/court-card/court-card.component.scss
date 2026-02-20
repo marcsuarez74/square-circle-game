@@ -40,51 +40,84 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-sm);
-  padding: 20px;
+  padding: 24px 32px;
   margin-bottom: 16px;
 
   .court-rectangle {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
     position: relative;
+    min-height: 180px;
+    justify-content: space-between;
 
+    // Alignement des équipes avec espacement constant
+    // - En 1v1: joueur centré
+    // - En 2v2: joueurs positionnés aux extrémités opposées
     .team {
       display: flex;
-      justify-content: center;
-      gap: 16px;
+      justify-content: space-between;
+      padding: 0 40px;
+      width: 100%;
+
+      &.team-1 {
+        flex-direction: row;
+      }
+
+      &.team-2 {
+        flex-direction: row-reverse;
+      }
 
       .player {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
+        width: 70px;
+        flex-shrink: 0;
 
         .player-number {
-          width: 32px;
-          height: 32px;
+          width: 40px;
+          height: 40px;
           background: var(--bg-tertiary);
+          border: 2px solid var(--border-color);
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 0.8rem;
-          font-weight: 600;
+          font-size: 0.9rem;
+          font-weight: 700;
           color: var(--text-primary);
+          flex-shrink: 0;
         }
 
         .player-name {
-          font-size: 0.8rem;
+          font-size: 0.75rem;
           color: var(--text-secondary);
           text-align: center;
+          max-width: 70px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
     }
 
     .net {
-      height: 2px;
-      background: var(--border-color);
-      margin: 8px 0;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px;
+      height: 60px;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--border-color) 0px,
+        var(--border-color) 4px,
+        transparent 4px,
+        transparent 8px
+      );
+      opacity: 0.5;
     }
   }
 }
