@@ -52,8 +52,11 @@
 }
 
 .sidebar-column {
+  align-self: start;
+  
   @media (max-width: 968px) {
     order: -1;
+    align-self: auto;
   }
 }
 
