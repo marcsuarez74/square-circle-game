@@ -1,13 +1,14 @@
 :host {
   display: block;
+  position: sticky;
+  top: 88px;
+  align-self: flex-start;
 }
 
 mat-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  position: sticky;
-  top: 24px;
 }
 
 mat-card-header {
