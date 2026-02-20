@@ -331,19 +331,15 @@ export class GameSetup {
       this.store.setGameState(this.gameService.getCurrentState());
       this.store.setPlayers(players);
       
-      // Restore match scores if available
-      if (this.importedMatchScores) {
-        Object.entries(this.importedMatchScores).forEach(([courtId, scores]) => {
-          this.store.updateScore(parseInt(courtId), 'team1', scores.team1);
-          this.store.updateScore(parseInt(courtId), 'team2', scores.team2);
-        });
-      }
+      // Reset match scores to 0 - we start a new round
+      // totalPoints already contains the cumulative scores from previous rounds
+      this.store.resetMatchScores();
 
       // Clear imported data
       this.importedGameState = null;
       this.importedMatchScores = null;
 
-      this.showMessage('Partie restaurée !');
+      this.showMessage('Partie restaurée ! Les scores commencent à 0.');
       this.router.navigate(['/game']);
       return;
     }
