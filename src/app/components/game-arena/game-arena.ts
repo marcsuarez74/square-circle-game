@@ -62,7 +62,7 @@ export class GameArena implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Navigate back if no game is active
     if (!this.isGameActive()) {
-      this.router.navigate(['/']);
+      this.router.navigate(['game-setup']);
       return;
     }
 
@@ -253,7 +253,7 @@ export class GameArena implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
         this.store.clearStorage();
-        this.router.navigate(['/']);
+        this.router.navigate(['game-setup']);
       }
     });
   }
@@ -279,7 +279,7 @@ export class GameArena implements OnInit, OnDestroy {
 
     // Navigate back to setup after a delay
     setTimeout(() => {
-      this.router.navigate(['/']);
+      this.router.navigate(['game-setup']);
     }, 3000);
   }
 

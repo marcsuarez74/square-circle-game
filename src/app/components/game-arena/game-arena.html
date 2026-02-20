@@ -110,6 +110,7 @@
                     <input
                       matInput
                       type="number"
+                      min="0"
                       [ngModel]="matchScores()[court.id]?.team1 || 0"
                       (ngModelChange)="updateScore(court.id, 'team1', +$event)"
                     />
@@ -122,6 +123,7 @@
                     <input
                       matInput
                       type="number"
+                      min="0"
                       [ngModel]="matchScores()[court.id]?.team2 || 0"
                       (ngModelChange)="updateScore(court.id, 'team2', +$event)"
                     />
