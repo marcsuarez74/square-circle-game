@@ -67,6 +67,23 @@ export class PlayerService {
     this.playersSubject.next([]);
   }
 
+  restorePlayers(players: Player[]): void {
+    this.players = players.map((p, index) => ({
+      ...p,
+      number: index + 1,
+    }));
+    this.nextNumber = players.length + 1;
+    
+    // Restore encounters map
+    players.forEach((p) => {
+      if (!this.playerEncounters.has(p.id)) {
+        this.playerEncounters.set(p.id, new Set());
+      }
+    });
+    
+    this.playersSubject.next([...this.players]);
+  }
+
   updatePlayerStats(playerId: string, won: boolean, teamScore: number): void {
     const player = this.players.find((p) => p.id === playerId);
     if (player) {

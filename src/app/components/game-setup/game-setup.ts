@@ -268,14 +268,10 @@ export class GameSetup {
           }
         }
 
-        // Load players
+        // Load players with their original IDs and stats
         this.playerService.clearPlayers();
         if (jsonContent.players && jsonContent.players.length > 0) {
-          const playersToAdd = jsonContent.players.map((p: any) => ({
-            firstName: p.firstName,
-            lastName: p.lastName,
-          }));
-          this.playerService.addPlayers(playersToAdd);
+          this.playerService.restorePlayers(jsonContent.players);
         }
 
         // Restore configuration
