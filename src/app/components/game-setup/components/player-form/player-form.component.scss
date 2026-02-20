@@ -17,6 +17,8 @@
       .mat-mdc-form-field-infix {
         padding: 8px 0 !important;
         min-height: 44px;
+        display: flex;
+        align-items: center;
       }
 
       .mat-mdc-text-field-wrapper {
@@ -30,18 +32,30 @@
         --mdc-outlined-text-field-focus-outline-color: var(--accent-primary);
       }
 
+      .mat-mdc-form-field-icon-prefix {
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        padding: 0 0 0 12px;
+      }
+
       .mat-mdc-form-field-label {
         color: var(--text-muted) !important;
+        padding-left: 8px;
       }
 
       input.mat-mdc-input-element {
         color: var(--text-primary) !important;
         text-align: left;
-        padding-left: 12px;
+        padding-left: 8px;
+        height: 100%;
+        display: flex;
+        align-items: center;
       }
 
-      .mat-mdc-form-field-label {
-        padding-left: 12px;
+      ::placeholder {
+        color: var(--text-muted);
+        opacity: 0.8;
       }
     }
   }
