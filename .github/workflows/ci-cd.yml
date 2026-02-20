@@ -141,12 +141,12 @@ jobs:
         run: |
           npx http-server ./dist/square-circle-game/browser -p 4200 --silent &
           sleep 5
-          
+
       - name: Run E2E tests
         run: npx playwright test
         env:
-          PLAYWRIGHT_BASE_URL: http://localhost:4200
-          
+          PLAYWRIGHT_BASE_URL: 'https://marcsuarez74.github.io/square-circle-game/'
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
