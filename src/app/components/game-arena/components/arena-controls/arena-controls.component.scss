@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+.arena-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 20px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  button {
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}

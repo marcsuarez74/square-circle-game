@@ -1,6 +1,6 @@
 @if (gameState()) {
   <div class="arena-container">
-    <!-- Ranking Panel Component -->
+    <!-- Ranking Panel -->
     <app-ranking-panel
       [isVisible]="isRankingPanelVisible()"
       (close)="hideRankingPanel()"
@@ -8,7 +8,7 @@
     >
     </app-ranking-panel>
 
-    <!-- Trigger Button for Ranking Panel -->
+    <!-- Ranking Trigger Button -->
     <button
       class="ranking-trigger-btn"
       (click)="toggleRankingPanel()"
@@ -18,7 +18,7 @@
       <mat-icon>emoji_events</mat-icon>
     </button>
 
-    <!-- Header avec timer et contrôles -->
+    <!-- Header -->
     <div class="arena-header">
       <div class="header-left">
         <button
@@ -32,147 +32,41 @@
         <h1>Ronde des Carrés - Manche {{ currentSet() }}</h1>
       </div>
 
-      <div class="timer-section">
-        <div
-          class="timer-display"
-          [class.running]="isTimerRunning() && remainingTime() > 60"
-          [class.warning]="isTimerRunning() && remainingTime() <= 60 && remainingTime() > 30"
-          [class.danger]="isTimerRunning() && remainingTime() <= 30"
-        >
-          {{ formatTime(remainingTime()) }}
-        </div>
-
-        <div class="timer-controls">
-          @if (!isTimerRunning()) {
-            <button mat-raised-button color="primary" (click)="startRound()">
-              <mat-icon>play_arrow</mat-icon>
-              Déclencher la manche
-            </button>
-          } @else {
-            <button mat-stroked-button (click)="stopRound()">
-              <mat-icon>pause</mat-icon>
-              Pause
-            </button>
-          }
-        </div>
-      </div>
+      <!-- Timer Component -->
+      <app-timer
+        [remainingTime]="remainingTime()"
+        [isRunning]="isTimerRunning()"
+        (start)="startRound()"
+        (stop)="stopRound()"
+      ></app-timer>
     </div>
 
-    <!-- Terrains -->
+    <!-- Courts Grid -->
     <div class="courts-grid">
       @for (court of gameState()!.courts; track court.id) {
-        <mat-card class="court-card">
-          <mat-card-header>
-            <mat-card-title>
-              <mat-icon>sports_tennis</mat-icon>
-              {{ court.name }}
-            </mat-card-title>
-          </mat-card-header>
-
-          <mat-card-content>
-            <!-- Visualisation du terrain -->
-            <div class="court-visual">
-              <div class="court-rectangle">
-                @if (court.players.length > 0) {
-                  <div class="team team-1">
-                    @for (player of getTeams(court).team1; track player.id) {
-                      <div class="player">
-                        <span class="player-number">{{ player.number }}</span>
-                        <span class="player-name">{{ getPlayerDisplayName(player) }}</span>
-                      </div>
-                    }
-                  </div>
-                }
-
-                @if (court.players.length >= 2) {
-                  <div class="net"></div>
-                }
-
-                @if (court.players.length === 4 || court.players.length === 2) {
-                  <div class="team team-2">
-                    @for (player of getTeams(court).team2; track player.id) {
-                      <div class="player">
-                        <span class="player-number">{{ player.number }}</span>
-                        <span class="player-name">{{ getPlayerDisplayName(player) }}</span>
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
-            </div>
-
-            <!-- Score -->
-            @if (court.players.length === 4 || court.players.length === 2) {
-              <div class="score-section">
-                <div class="score-inputs">
-                  <mat-form-field appearance="outline" class="score-field">
-                    <mat-label>Équipe 1</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      min="0"
-                      [ngModel]="matchScores()[court.id]?.team1 || 0"
-                      (ngModelChange)="updateScore(court.id, 'team1', +$event)"
-                    />
-                  </mat-form-field>
-
-                  <span class="vs">VS</span>
-
-                  <mat-form-field appearance="outline" class="score-field">
-                    <mat-label>Équipe 2</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      min="0"
-                      [ngModel]="matchScores()[court.id]?.team2 || 0"
-                      (ngModelChange)="updateScore(court.id, 'team2', +$event)"
-                    />
-                  </mat-form-field>
-                </div>
-              </div>
-            }
-          </mat-card-content>
-        </mat-card>
+        <app-court-card
+          [court]="court"
+          [score]="matchScores()[court.id]"
+          [getPlayerDisplayName]="getPlayerDisplayName.bind(this)"
+          (scoreChange)="onScoreChange($event)"
+        ></app-court-card>
       }
     </div>
 
-    <!-- File d'attente -->
+    <!-- Waiting Queue -->
     @if (waitingPlayers().length > 0) {
-      <mat-card class="waiting-card">
-        <mat-card-header>
-          <mat-card-title>
-            <mat-icon>queue</mat-icon>
-            File d'attente ({{ waitingPlayers().length }} joueurs)
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="waiting-players-list">
-            @for (player of waitingPlayers(); track player.id) {
-              <span class="waiting-player">
-                N°{{ player.number }} - {{ getPlayerDisplayName(player) }}
-              </span>
-            }
-          </div>
-        </mat-card-content>
-      </mat-card>
+      <app-waiting-queue
+        [players]="waitingPlayers()"
+        [getPlayerDisplayName]="getPlayerDisplayName.bind(this)"
+      ></app-waiting-queue>
     }
 
-    <!-- Contrôles en bas -->
-    <div class="arena-controls">
-      <button mat-raised-button color="accent" (click)="shufflePlayers()">
-        <mat-icon>shuffle</mat-icon>
-        Mélanger les joueurs
-      </button>
-
-      <button mat-stroked-button (click)="nextRound()" [disabled]="isTimerRunning()">
-        <mat-icon>skip_next</mat-icon>
-        Manche suivante
-      </button>
-
-      <button mat-stroked-button color="warn" (click)="endGame()">
-        <mat-icon>flag</mat-icon>
-        Terminer la partie
-      </button>
-    </div>
+    <!-- Arena Controls -->
+    <app-arena-controls
+      [isTimerRunning]="isTimerRunning()"
+      (shuffle)="shufflePlayers()"
+      (nextRound)="nextRound()"
+      (endGame)="endGame()"
+    ></app-arena-controls>
   </div>
 }

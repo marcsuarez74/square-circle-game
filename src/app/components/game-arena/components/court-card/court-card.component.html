@@ -1,0 +1,72 @@
+<mat-card class="court-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>sports_tennis</mat-icon>
+      {{ court().name }}
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- Visualisation du terrain -->
+    <div class="court-visual">
+      <div class="court-rectangle">
+        @if (court().players.length > 0) {
+          <div class="team team-1">
+            @for (player of getTeams(court()).team1; track player.id) {
+              <div class="player">
+                <span class="player-number">{{ player.number }}</span>
+                <span class="player-name">{{ getPlayerDisplayName()(player) }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        @if (court().players.length >= 2) {
+          <div class="net"></div>
+        }
+
+        @if (court().players.length === 4 || court().players.length === 2) {
+          <div class="team team-2">
+            @for (player of getTeams(court()).team2; track player.id) {
+              <div class="player">
+                <span class="player-number">{{ player.number }}</span>
+                <span class="player-name">{{ getPlayerDisplayName()(player) }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Score -->
+    @if (court().players.length === 4 || court().players.length === 2) {
+      <div class="score-section">
+        <div class="score-inputs">
+          <mat-form-field appearance="outline" class="score-field">
+            <mat-label>Équipe 1</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              [ngModel]="score().team1 || 0"
+              (ngModelChange)="onScoreChange('team1', $event)"
+            />
+          </mat-form-field>
+
+          <span class="vs">VS</span>
+
+          <mat-form-field appearance="outline" class="score-field">
+            <mat-label>Équipe 2</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              [ngModel]="score().team2 || 0"
+              (ngModelChange)="onScoreChange('team2', $event)"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+    }
+  </mat-card-content>
+</mat-card>

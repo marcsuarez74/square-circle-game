@@ -1,0 +1,17 @@
+<mat-card class="waiting-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>queue</mat-icon>
+      File d'attente ({{ players().length }} joueurs)
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="waiting-players-list">
+      @for (player of players(); track player.id) {
+        <span class="waiting-player">
+          N°{{ player.number }} - {{ getPlayerDisplayName()(player) }}
+        </span>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,11 @@
+// ============================================
+// Design System - Entry Point
+// ============================================
+
+@forward 'variables';
+@forward 'mixins';
+
+// Import both in your component SCSS files:
+// @use '../../styles/design-system' as ds;
+// 
+// Then use: ds.$border-radius or ds.card()

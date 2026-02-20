@@ -1,0 +1,22 @@
+<div class="timer-section">
+  <div
+    class="timer-display"
+    [class]="getTimerClass()"
+  >
+    {{ formatTime(remainingTime()) }}
+  </div>
+
+  <div class="timer-controls">
+    @if (!isRunning()) {
+      <button mat-raised-button color="primary" (click)="start.emit()">
+        <mat-icon>play_arrow</mat-icon>
+        Déclencher la manche
+      </button>
+    } @else {
+      <button mat-stroked-button (click)="stop.emit()">
+        <mat-icon>pause</mat-icon>
+        Pause
+      </button>
+    }
+  </div>
+</div>

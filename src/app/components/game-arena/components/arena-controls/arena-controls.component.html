@@ -1,0 +1,16 @@
+<div class="arena-controls">
+  <button mat-raised-button color="accent" (click)="shuffle.emit()">
+    <mat-icon>shuffle</mat-icon>
+    Mélanger les joueurs
+  </button>
+
+  <button mat-stroked-button (click)="nextRound.emit()" [disabled]="isTimerRunning()">
+    <mat-icon>skip_next</mat-icon>
+    Manche suivante
+  </button>
+
+  <button mat-stroked-button color="warn" (click)="endGame.emit()">
+    <mat-icon>flag</mat-icon>
+    Terminer la partie
+  </button>
+</div>

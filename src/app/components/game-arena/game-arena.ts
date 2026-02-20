@@ -1,18 +1,25 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
+
+// Components
 import { RankingPanel } from '../ranking-panel/ranking-panel';
+import {
+  CourtCardComponent,
+  TimerComponent,
+  ArenaControlsComponent,
+  WaitingQueueComponent,
+  CourtScore,
+} from './components';
+
+// Services & Models
 import { GameService } from '../../services/game';
 import { GameStore } from '../../store/game.store';
 import { GameState } from '../../models/game-state.model';
@@ -29,12 +36,12 @@ import { ConfirmDialog, ConfirmDialogData } from '../confirm-dialog/confirm-dial
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatDividerModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatBadgeModule,
     MatTooltipModule,
     RankingPanel,
+    CourtCardComponent,
+    TimerComponent,
+    ArenaControlsComponent,
+    WaitingQueueComponent,
   ],
   templateUrl: './game-arena.html',
   styleUrl: './game-arena.scss',
@@ -46,7 +53,7 @@ export class GameArena implements OnInit, OnDestroy {
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
-  // Expose store signals
+  // Store signals
   protected gameState = this.store.gameState;
   protected players = this.store.players;
   protected matchScores = this.store.matchScores;
@@ -60,18 +67,14 @@ export class GameArena implements OnInit, OnDestroy {
   private saveInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
-    // Navigate back if no game is active
     if (!this.isGameActive()) {
       this.router.navigate(['game-setup']);
       return;
     }
 
-    // Initialize scores for courts
     this.initializeScores();
 
-    // Subscribe to timer updates from game service
     this.gameService.getState$().subscribe((state) => {
-      // Only update timer-related properties, preserve other state like matchScores
       const currentState = this.gameState();
       if (currentState) {
         this.store.setGameState({
@@ -82,12 +85,7 @@ export class GameArena implements OnInit, OnDestroy {
       }
     });
 
-    // Auto-save every 10 seconds
-    this.saveInterval = setInterval(() => {
-      this.saveGame();
-    }, 10000);
-
-    // Save on page unload
+    this.saveInterval = setInterval(() => this.saveGame(), 10000);
     window.addEventListener('beforeunload', this.handleBeforeUnload.bind(this));
   }
 
@@ -96,8 +94,6 @@ export class GameArena implements OnInit, OnDestroy {
       clearInterval(this.saveInterval);
     }
     window.removeEventListener('beforeunload', this.handleBeforeUnload.bind(this));
-
-    // Save one last time
     this.saveGame();
   }
 
@@ -114,72 +110,39 @@ export class GameArena implements OnInit, OnDestroy {
     if (!state) return;
 
     state.courts.forEach((court) => {
-      const scores = this.matchScores();
-      if (!scores[court.id]) {
+      if (!this.matchScores()[court.id]) {
         this.store.updateScore(court.id, 'team1', 0);
         this.store.updateScore(court.id, 'team2', 0);
       }
     });
   }
 
-  getTeams(court: Court): { team1: Player[]; team2: Player[] } {
-    if (court.players.length === 4) {
-      return {
-        team1: [court.players[0], court.players[1]],
-        team2: [court.players[2], court.players[3]],
-      };
-    } else if (court.players.length === 2) {
-      return {
-        team1: [court.players[0]],
-        team2: [court.players[1]],
-      };
-    }
-    return { team1: court.players, team2: [] };
-  }
-
-  onScoreInput(courtId: number, team: 'team1' | 'team2', event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const value = parseInt(input.value, 10) || 0;
-    this.updateScore(courtId, team, value);
-  }
-
-  updateScore(courtId: number, team: 'team1' | 'team2', value: number): void {
-    this.store.updateScore(courtId, team, Math.max(0, value));
+  onScoreChange(event: { courtId: number; team: 'team1' | 'team2'; value: number }): void {
+    this.store.updateScore(event.courtId, event.team, event.value);
   }
 
   nextRound(): void {
     this.saveMatchResults();
-    // Pass updated players with fresh matchesPlayed data
     this.gameService.nextRound(this.players());
     this.store.resetMatchScores();
-    // Sync game state from service to store
     this.store.setGameState(this.gameService.getCurrentState());
     this.showMessage('Nouvelle manche !');
   }
 
   shufflePlayers(): void {
     this.gameService.shufflePlayers();
-    // Sync game state from service to store
     this.store.setGameState(this.gameService.getCurrentState());
     this.showMessage('Joueurs mélangés !');
   }
 
   startRound(): void {
     this.gameService.startTimer();
-    // Sync game state from service to store
     this.store.setGameState(this.gameService.getCurrentState());
   }
 
   stopRound(): void {
     this.gameService.stopTimer();
-    // Sync game state from service to store
     this.store.setGameState(this.gameService.getCurrentState());
-  }
-
-  formatTime(seconds: number): string {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
   private saveMatchResults(): void {
@@ -259,25 +222,13 @@ export class GameArena implements OnInit, OnDestroy {
   }
 
   endGame(): void {
-    // Save final results to store
     this.saveMatchResults();
-
-    // Persist to localStorage before export
     this.store.persistToStorage();
-
-    // Export final results (will read from localStorage)
     this.store.exportToJSON();
 
-    const allPlayers = this.players();
-    const rankings = [...allPlayers].sort((a, b) => b.totalPoints - a.totalPoints);
-
-    console.log('Classement final:', rankings);
     this.showMessage('Partie terminée ! Résultats exportés.');
-
-    // Clear saved game after export
     this.store.clearStorage();
 
-    // Navigate back to setup after a delay
     setTimeout(() => {
       this.router.navigate(['game-setup']);
     }, 3000);
