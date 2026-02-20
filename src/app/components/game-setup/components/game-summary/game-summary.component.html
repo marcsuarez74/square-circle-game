@@ -1,0 +1,87 @@
+<mat-card class="setup-card summary-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>summarize</mat-icon>
+      Récapitulatif
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <!-- Validation Status -->
+    <div
+      class="validation-status"
+      [class.valid]="isFormValid()"
+      [class.invalid]="!isFormValid()"
+    >
+      <mat-icon>
+        {{ isFormValid() ? 'check_circle' : 'error' }}
+      </mat-icon>
+      <span>{{ validationStatus().message }}</span>
+    </div>
+
+    <!-- Summary Items -->
+    <div class="summary-row">
+      <span class="label">Joueurs</span>
+      <span
+        class="value"
+        [class.success]="players().length >= 2"
+        [class.error]="players().length < 2"
+      >
+        {{ players().length }} / min. 2
+      </span>
+    </div>
+
+    <div class="summary-row">
+      <span class="label">Terrains</span>
+      <span class="value highlight">{{ numberOfCourts() }}</span>
+    </div>
+
+    <div class="summary-row">
+      <span class="label">Durée/match</span>
+      <span
+        class="value"
+        [class.highlight]="matchDurationMinutes()"
+        [class.text-gray]="!matchDurationMinutes()"
+      >
+        {{ matchDurationMinutes() ? matchDurationMinutes() + ' min' : 'Non défini' }}
+      </span>
+    </div>
+
+    @if (players().length >= 2 && matchDurationMinutes()) {
+      <div class="summary-row">
+        <span class="label">Joueurs/terrain</span>
+        <span class="value success">
+          {{ playersPerCourt() | number: '1.0-1' }}
+        </span>
+      </div>
+
+      @if (waitingPlayersCount() > 0) {
+        <div class="summary-row">
+          <span class="label">En file d'attente</span>
+          <span class="value error">
+            {{ waitingPlayersCount() }}
+          </span>
+        </div>
+      }
+    }
+
+    <button
+      mat-raised-button
+      class="start-btn"
+      (click)="onStartGame()"
+      [disabled]="!isFormValid()"
+    >
+      <mat-icon>sports_tennis</mat-icon>
+      Lancer la partie
+    </button>
+
+    <p class="info-text">
+      @if (!isFormValid()) {
+        <mat-icon class="info-icon">info</mat-icon>
+        Complétez la configuration
+      } @else {
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        Tout est prêt !
+      }
+    </p>
+  </mat-card-content>
+</mat-card>

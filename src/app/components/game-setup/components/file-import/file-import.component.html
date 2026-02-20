@@ -1,0 +1,53 @@
+<div class="import-sections">
+  <!-- Excel Import -->
+  <div class="import-section">
+    <input
+      type="file"
+      #excelFileInput
+      accept=".xlsx,.xls"
+      (change)="onExcelFileSelected($event)"
+      hidden
+    />
+
+    <div
+      class="drop-zone"
+      [class.dragging]="isExcelDragging"
+      (click)="excelFileInput.click()"
+      (dragover)="onExcelDragOver($event)"
+      (dragleave)="onExcelDragLeave($event)"
+      (drop)="onExcelDrop($event)"
+    >
+      <mat-icon>cloud_upload</mat-icon>
+      <p class="drop-text">
+        {{ isExcelDragging ? 'Déposez le fichier ici' : 'Importer depuis Excel' }}
+      </p>
+      <p class="drop-hint">Glissez-déposez ou cliquez • Format : "nom" et "prénom"</p>
+    </div>
+  </div>
+
+  <!-- JSON Import -->
+  <div class="import-section json-import">
+    <input
+      type="file"
+      #jsonFileInput
+      accept=".json"
+      (change)="onJsonFileSelected($event)"
+      hidden
+    />
+
+    <div
+      class="drop-zone json-zone"
+      [class.dragging]="isJsonDragging"
+      (click)="jsonFileInput.click()"
+      (dragover)="onJsonDragOver($event)"
+      (dragleave)="onJsonDragLeave($event)"
+      (drop)="onJsonDrop($event)"
+    >
+      <mat-icon>restore</mat-icon>
+      <p class="drop-text">
+        {{ isJsonDragging ? 'Déposez le fichier ici' : 'Charger une partie sauvegardée' }}
+      </p>
+      <p class="drop-hint">Glissez-déposez ou cliquez • Format : .json exporté</p>
+    </div>
+  </div>
+</div>

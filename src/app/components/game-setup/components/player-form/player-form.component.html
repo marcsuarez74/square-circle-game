@@ -1,0 +1,32 @@
+<div class="player-form">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Prénom</mat-label>
+    <input
+      matInput
+      [(ngModel)]="newPlayer.firstName"
+      placeholder="Ex: Jean"
+      (keypress)="onKeyPress($event)"
+    />
+    <mat-icon matPrefix>person</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Nom</mat-label>
+    <input
+      matInput
+      [(ngModel)]="newPlayer.lastName"
+      placeholder="Ex: Dupont"
+      (keypress)="onKeyPress($event)"
+    />
+    <mat-icon matPrefix>badge</mat-icon>
+  </mat-form-field>
+
+  <button
+    mat-raised-button
+    (click)="onSubmit()"
+    [disabled]="!isValid"
+  >
+    <mat-icon>add</mat-icon>
+    Ajouter
+  </button>
+</div>

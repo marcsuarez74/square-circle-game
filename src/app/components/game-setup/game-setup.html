@@ -17,320 +17,40 @@
             </mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <!-- Manual Add -->
+            <!-- Player Form (Dumb Component) -->
             <div class="section-title">Ajouter un joueur</div>
-            <div class="player-form">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Prénom</mat-label>
-                <input
-                  matInput
-                  [(ngModel)]="newPlayer.firstName"
-                  placeholder="Ex: Jean"
-                  (keyup.enter)="addPlayer()"
-                />
-                <mat-icon matPrefix>person</mat-icon>
-              </mat-form-field>
+            <app-player-form (addPlayer)="onAddPlayer($event)"></app-player-form>
 
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Nom</mat-label>
-                <input
-                  matInput
-                  [(ngModel)]="newPlayer.lastName"
-                  placeholder="Ex: Dupont"
-                  (keyup.enter)="addPlayer()"
-                />
-                <mat-icon matPrefix>badge</mat-icon>
-              </mat-form-field>
+            <!-- File Import (Dumb Component) -->
+            <app-file-import (fileSelected)="onFileImported($event)"></app-file-import>
 
-              <button
-                mat-raised-button
-                (click)="addPlayer()"
-                [disabled]="!newPlayer.firstName || !newPlayer.lastName"
-              >
-                <mat-icon>add</mat-icon>
-                Ajouter
-              </button>
-            </div>
-
-            <!-- Excel Import -->
-            <div class="import-section">
-              <input
-                type="file"
-                #fileInput
-                accept=".xlsx,.xls"
-                (change)="onFileSelected($event)"
-                hidden
-              />
-
-              <div
-                class="drop-zone"
-                [class.dragging]="isDragging"
-                (click)="fileInput.click()"
-                (dragover)="onDragOver($event)"
-                (dragleave)="onDragLeave($event)"
-                (drop)="onDrop($event)"
-              >
-                <mat-icon>cloud_upload</mat-icon>
-                <p class="drop-text">
-                  {{ isDragging ? 'Déposez le fichier ici' : 'Importer depuis Excel' }}
-                </p>
-                <p class="drop-hint">Glissez-déposez ou cliquez • Format : "nom" et "prénom"</p>
-              </div>
-            </div>
-
-            <!-- JSON Import (Saved Games) -->
-            <div class="import-section json-import">
-              <input
-                type="file"
-                #jsonFileInput
-                accept=".json"
-                (change)="onJsonFileSelected($event)"
-                hidden
-              />
-
-              <div
-                class="drop-zone json-zone"
-                [class.dragging]="isJsonDragging"
-                (click)="jsonFileInput.click()"
-                (dragover)="onJsonDragOver($event)"
-                (dragleave)="onJsonDragLeave($event)"
-                (drop)="onJsonDrop($event)"
-              >
-                <mat-icon>restore</mat-icon>
-                <p class="drop-text">
-                  {{ isJsonDragging ? 'Déposez le fichier ici' : 'Charger une partie sauvegardée' }}
-                </p>
-                <p class="drop-hint">Glissez-déposez ou cliquez • Format : .json exporté</p>
-              </div>
-            </div>
-
-            <!-- Players List -->
-            <div class="players-section">
-              @if (playerService.getPlayers$() | async; as players) {
-                @if (players.length > 0) {
-                  <div class="players-header">
-                    <h3>Joueurs inscrits</h3>
-                    <span class="players-count">{{ players.length }}</span>
-                  </div>
-
-                  <div class="players-grid">
-                    @for (player of players; track player.id) {
-                      <div class="player-card">
-                        <div class="player-avatar">{{ player.number }}</div>
-                        <div class="player-info">
-                          <div class="player-name">
-                            {{ player.firstName }} {{ player.lastName }}
-                          </div>
-                        </div>
-                        <button
-                          mat-icon-button
-                          color="warn"
-                          (click)="removePlayer(player.id)"
-                          class="delete-btn"
-                          matTooltip="Supprimer"
-                        >
-                          <mat-icon>close</mat-icon>
-                        </button>
-                      </div>
-                    }
-                  </div>
-
-                  <div class="players-actions">
-                    <button mat-stroked-button color="warn" (click)="clearAllPlayers()">
-                      <mat-icon>delete_sweep</mat-icon>
-                      Tout supprimer
-                    </button>
-                  </div>
-                } @else {
-                  <div class="empty-state">
-                    <mat-icon>group_off</mat-icon>
-                    <p>Aucun joueur inscrit</p>
-                    <p class="text-sm text-gray">
-                      Ajoutez des joueurs ou importez un fichier Excel
-                    </p>
-                  </div>
-                }
-              }
-            </div>
+            <!-- Player List (Dumb Component) -->
+            <app-player-list
+              [players]="players()"
+              (removePlayer)="onRemovePlayer($event)"
+              (clearAll)="onClearAllPlayers()"
+            ></app-player-list>
           </mat-card-content>
         </mat-card>
 
-        <!-- Configuration Card -->
-        <mat-card class="setup-card">
-          <mat-card-header>
-            <mat-card-title>
-              <mat-icon>settings</mat-icon>
-              Configuration de la Partie
-            </mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <!-- Courts -->
-            <div class="config-section">
-              <div class="config-label">
-                <mat-icon>sports_tennis</mat-icon>
-                Nombre de terrains : {{ numberOfCourts }}
-              </div>
-              <div class="courts-grid">
-                @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track i) {
-                  <button
-                    class="court-btn"
-                    [class.active]="i <= numberOfCourts"
-                    (click)="numberOfCourts = i"
-                  >
-                    {{ i }}
-                  </button>
-                }
-              </div>
-              <mat-slider min="1" max="10" step="1" class="full-width">
-                <input matSliderThumb [(ngModel)]="numberOfCourts" />
-              </mat-slider>
-            </div>
-
-            <!-- Timer -->
-            <div class="config-section">
-              <div class="config-label">
-                <mat-icon>timer</mat-icon>
-                Durée du match
-                @if (matchDurationMinutes) {
-                  <span style="color: #667eea; margin-left: 8px">
-                    ({{ formatDuration(matchDurationMinutes) }})</span
-                  >
-                }
-              </div>
-              <div class="timer-grid">
-                @for (preset of timerPresets; track preset) {
-                  <button
-                    mat-stroked-button
-                    [class.active]="matchDurationMinutes === preset"
-                    (click)="selectTimer(preset)"
-                  >
-                    {{ formatDuration(preset) }}
-                  </button>
-                }
-              </div>
-              <mat-form-field appearance="outline" class="full-width" style="margin-top: 16px">
-                <mat-label>Ou durée personnalisée (minutes)</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  [(ngModel)]="matchDurationMinutes"
-                  placeholder="Entrez une durée"
-                  min="1"
-                  max="120"
-                />
-                <mat-icon matPrefix>schedule</mat-icon>
-              </mat-form-field>
-            </div>
-          </mat-card-content>
-        </mat-card>
+        <!-- Game Config (Dumb Component) -->
+        <app-game-config
+          [numberOfCourts]="numberOfCourts"
+          [matchDurationMinutes]="matchDurationMinutes"
+          (courtsChange)="onCourtsChange($event)"
+          (durationChange)="onDurationChange($event)"
+        ></app-game-config>
       </div>
 
       <!-- Right column: Summary -->
       <div class="sidebar-column">
-        <mat-card class="setup-card summary-card">
-          <mat-card-header>
-            <mat-card-title>
-              <mat-icon>summarize</mat-icon>
-              Récapitulatif
-            </mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <!-- Validation Status -->
-            @if (playerService.getPlayers$() | async; as players) {
-              <div
-                class="validation-status"
-                [class.valid]="isFormValid"
-                [class.invalid]="!isFormValid"
-              >
-                <mat-icon>
-                  {{ isFormValid ? 'check_circle' : 'error' }}
-                </mat-icon>
-                <span>{{ getValidationStatus().message }}</span>
-              </div>
-            }
-
-            <!-- Summary Items -->
-            @if (playerService.getPlayers$() | async; as players) {
-              <div class="summary-row">
-                <span class="label">Joueurs</span>
-                <span
-                  class="value"
-                  [class.success]="players.length >= 2"
-                  [class.error]="players.length < 2"
-                >
-                  {{ players.length }} / min. 2
-                </span>
-              </div>
-            }
-
-            <div class="summary-row">
-              <span class="label">Terrains</span>
-              <span class="value highlight">{{ numberOfCourts }}</span>
-            </div>
-
-            <div class="summary-row">
-              <span class="label">Durée/match</span>
-              <span
-                class="value"
-                [class.highlight]="matchDurationMinutes"
-                [class.text-gray]="!matchDurationMinutes"
-              >
-                {{ matchDurationMinutes ? matchDurationMinutes + ' min' : 'Non défini' }}
-              </span>
-            </div>
-
-            @if (playerService.getPlayers$() | async; as players) {
-              @if (players.length >= 2 && matchDurationMinutes) {
-                <div class="summary-row">
-                  <span class="label">Joueurs/terrain</span>
-                  <span class="value success">
-                    {{ players.length / numberOfCourts | number: '1.0-1' }}
-                  </span>
-                </div>
-
-                @if (players.length > numberOfCourts * 4) {
-                  <div class="summary-row">
-                    <span class="label">En file d'attente</span>
-                    <span class="value error">
-                      {{ players.length - numberOfCourts * 4 }}
-                    </span>
-                  </div>
-                }
-              }
-            }
-
-            <button
-              mat-raised-button
-              class="start-btn"
-              (click)="startGame()"
-              [disabled]="!isFormValid"
-            >
-              <mat-icon>sports_tennis</mat-icon>
-              Lancer la partie
-            </button>
-
-            <p class="text-center text-sm text-gray" style="margin-top: 12px">
-              @if (!isFormValid) {
-                <mat-icon style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle"
-                  >info</mat-icon
-                >
-                Complétez la configuration
-              } @else {
-                <mat-icon
-                  style="
-                    font-size: 16px;
-                    width: 16px;
-                    height: 16px;
-                    vertical-align: middle;
-                    color: #4caf50;
-                  "
-                  >check_circle</mat-icon
-                >
-                Tout est prêt !
-              }
-            </p>
-          </mat-card-content>
-        </mat-card>
+        <!-- Game Summary (Dumb Component) -->
+        <app-game-summary
+          [players]="players()"
+          [numberOfCourts]="numberOfCourts"
+          [matchDurationMinutes]="matchDurationMinutes"
+          (startGame)="onStartGame()"
+        ></app-game-summary>
       </div>
     </div>
   </div>

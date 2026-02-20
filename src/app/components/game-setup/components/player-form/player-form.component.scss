@@ -1,0 +1,16 @@
+.player-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+
+  .full-width {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  button {
+    margin-top: 4px;
+    height: 56px;
+  }
+}

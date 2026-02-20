@@ -1,24 +1,19 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
 import { Player, PlayerForm } from '../models/player.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlayerService {
-  private players: Player[] = [];
-  private playersSubject = new BehaviorSubject<Player[]>([]);
+  private playersSignal = signal<Player[]>([]);
+  readonly players = computed(() => this.playersSignal());
   private nextNumber = 1;
 
   // Track player encounters to avoid repetitions
   private playerEncounters: Map<string, Set<string>> = new Map();
 
-  getPlayers$(): Observable<Player[]> {
-    return this.playersSubject.asObservable();
-  }
-
   getPlayers(): Player[] {
-    return [...this.players];
+    return this.playersSignal();
   }
 
   addPlayer(playerForm: PlayerForm): Player {
@@ -32,9 +27,8 @@ export class PlayerService {
       wins: 0,
     };
 
-    this.players.push(player);
     this.playerEncounters.set(player.id, new Set());
-    this.playersSubject.next([...this.players]);
+    this.playersSignal.update(players => [...players, player]);
     return player;
   }
 
@@ -49,26 +43,23 @@ export class PlayerService {
       wins: 0,
     }));
 
-    this.players = [...this.players, ...newPlayers];
     newPlayers.forEach((p) => this.playerEncounters.set(p.id, new Set()));
-    this.playersSubject.next([...this.players]);
+    this.playersSignal.update(players => [...players, ...newPlayers]);
   }
 
   removePlayer(playerId: string): void {
-    this.players = this.players.filter((p) => p.id !== playerId);
     this.playerEncounters.delete(playerId);
-    this.playersSubject.next([...this.players]);
+    this.playersSignal.update(players => players.filter((p) => p.id !== playerId));
   }
 
   clearPlayers(): void {
-    this.players = [];
     this.nextNumber = 1;
     this.playerEncounters.clear();
-    this.playersSubject.next([]);
+    this.playersSignal.set([]);
   }
 
   restorePlayers(players: Player[]): void {
-    this.players = players.map((p, index) => ({
+    const restoredPlayers = players.map((p, index) => ({
       ...p,
       number: index + 1,
     }));
@@ -81,20 +72,23 @@ export class PlayerService {
       }
     });
 
-    this.playersSubject.next([...this.players]);
+    this.playersSignal.set(restoredPlayers);
   }
 
   updatePlayerStats(playerId: string, won: boolean, teamScore: number): void {
-    const player = this.players.find((p) => p.id === playerId);
-    if (player) {
-      player.matchesPlayed++;
-      if (won) {
-        player.wins++;
-      }
-      // Accumulate team score directly (cumulative scoring)
-      player.totalPoints += teamScore;
-      this.playersSubject.next([...this.players]);
-    }
+    this.playersSignal.update(players => {
+      return players.map(player => {
+        if (player.id === playerId) {
+          return {
+            ...player,
+            matchesPlayed: player.matchesPlayed + 1,
+            wins: won ? player.wins + 1 : player.wins,
+            totalPoints: player.totalPoints + teamScore,
+          };
+        }
+        return player;
+      });
+    });
   }
 
   // Track that two players have played together
@@ -120,11 +114,11 @@ export class PlayerService {
   }
 
   getRankings(): Player[] {
-    return [...this.players].sort((a, b) => b.totalPoints - a.totalPoints);
+    return [...this.playersSignal()].sort((a, b) => b.totalPoints - a.totalPoints);
   }
 
   getPlayerById(playerId: string): Player | undefined {
-    return this.players.find((p) => p.id === playerId);
+    return this.playersSignal().find((p) => p.id === playerId);
   }
 
   private generateId(): string {

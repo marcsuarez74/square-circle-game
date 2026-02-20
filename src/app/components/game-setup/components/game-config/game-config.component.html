@@ -1,0 +1,68 @@
+<mat-card class="setup-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>settings</mat-icon>
+      Configuration de la Partie
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <!-- Courts -->
+    <div class="config-section">
+      <div class="config-label">
+        <mat-icon>sports_tennis</mat-icon>
+        Nombre de terrains : {{ numberOfCourts() }}
+      </div>
+      <div class="courts-grid">
+        @for (i of courtOptions; track i) {
+          <button
+            class="court-btn"
+            [class.active]="i <= numberOfCourts()"
+            (click)="onCourtsChange(i)"
+          >
+            {{ i }}
+          </button>
+        }
+      </div>
+      <mat-slider min="1" max="10" step="1" class="full-width">
+        <input matSliderThumb [ngModel]="numberOfCourts()" (ngModelChange)="onCourtsChange($event)" />
+      </mat-slider>
+    </div>
+
+    <!-- Timer -->
+    <div class="config-section">
+      <div class="config-label">
+        <mat-icon>timer</mat-icon>
+        Durée du match
+        @if (matchDurationMinutes()) {
+          <span class="duration-display">
+            ({{ formatDuration(matchDurationMinutes()!) }})</span
+          >
+        }
+      </div>
+      <div class="timer-grid">
+        @for (preset of timerPresets; track preset) {
+          <button
+            mat-stroked-button
+            [class.active]="matchDurationMinutes() === preset"
+            (click)="onDurationChange(preset)"
+          >
+            {{ formatDuration(preset) }}
+          </button>
+        }
+      </div>
+      <mat-form-field appearance="outline" class="full-width custom-duration">
+        <mat-label>Ou durée personnalisée (minutes)</mat-label>
+        <input
+          matInput
+          type="number"
+          [ngModel]="matchDurationMinutes()"
+          (ngModelChange)="onCustomDurationChange($event)"
+          placeholder="Entrez une durée"
+          min="1"
+          max="120"
+        />
+        <mat-icon matPrefix>schedule</mat-icon>
+      </mat-form-field>
+    </div>
+  </mat-card-content>
+</mat-card>

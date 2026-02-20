@@ -1,0 +1,45 @@
+<div class="players-section">
+  @if (players().length > 0) {
+    <div class="players-header">
+      <h3>Joueurs inscrits</h3>
+      <span class="players-count">{{ players().length }}</span>
+    </div>
+
+    <div class="players-grid">
+      @for (player of players(); track player.id) {
+        <div class="player-card">
+          <div class="player-avatar">{{ player.number }}</div>
+          <div class="player-info">
+            <div class="player-name">
+              {{ player.firstName }} {{ player.lastName }}
+            </div>
+          </div>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="onRemovePlayer(player.id)"
+            class="delete-btn"
+            matTooltip="Supprimer"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="players-actions">
+      <button mat-stroked-button color="warn" (click)="onClearAll()">
+        <mat-icon>delete_sweep</mat-icon>
+        Tout supprimer
+      </button>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <mat-icon>group_off</mat-icon>
+      <p>Aucun joueur inscrit</p>
+      <p class="text-sm text-gray">
+        Ajoutez des joueurs ou importez un fichier Excel
+      </p>
+    </div>
+  }
+</div>
