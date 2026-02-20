@@ -205,8 +205,8 @@ test.describe('Page de configuration de la partie', () => {
         await page.waitForTimeout(300);
       }
       
-      // Configurer 1 terrain
-      await page.locator('.court-btn:has-text("1")').click();
+      // Configurer 1 terrain (utiliser exact: true pour éviter de matcher "10")
+      await page.getByRole('button', { name: '1', exact: true }).click();
       await page.waitForTimeout(300);
       
       // Attendre que le bouton soit activé
@@ -321,7 +321,7 @@ test.describe('Tests de flux complet', () => {
     if (await timerButtons.count() > 0) {
       await timerButtons.first().click();
     }
-    await page.locator('.court-btn:has-text("2")').click();
+    await page.getByRole('button', { name: '2', exact: true }).click();
     await page.waitForTimeout(500);
     
     // Démarrer si possible
@@ -349,7 +349,7 @@ test.describe('Tests de flux complet', () => {
     if (await timerButtons.count() > 0) {
       await timerButtons.first().click();
     }
-    await page.locator('.court-btn:has-text("1")').click();
+    await page.getByRole('button', { name: '1', exact: true }).click();
     await page.waitForTimeout(500);
     
     // Démarrer
