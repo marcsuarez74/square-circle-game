@@ -143,12 +143,47 @@ export const GameStore = signalStore(
       patchState(store, initialState);
     },
 
-    // Export game as JSON
+    // Export game as JSON with final rankings
     exportToJSON(): void {
       // First persist to ensure data is saved
       this.persistToStorage();
       
-      // Read from localStorage to get the latest persisted data
+      // Get current state
+      const players = store.players();
+      const gameState = store.gameState();
+      const matchScores = store.matchScores();
+      
+      // Calculate final rankings including current match scores
+      const finalRankings = players.map((player) => {
+        let currentMatchPoints = 0;
+        
+        if (gameState) {
+          for (const court of gameState.courts) {
+            const playerIndex = court.players.findIndex((p) => p.id === player.id);
+            if (playerIndex !== -1) {
+              const score = matchScores[court.id] || { team1: 0, team2: 0 };
+              
+              let isTeam1: boolean;
+              if (court.players.length === 4) {
+                isTeam1 = playerIndex < 2;
+              } else {
+                isTeam1 = playerIndex === 0;
+              }
+              
+              currentMatchPoints = isTeam1 ? score.team1 : score.team2;
+              break;
+            }
+          }
+        }
+        
+        return {
+          ...player,
+          currentMatchPoints,
+          finalTotal: player.totalPoints + currentMatchPoints,
+        };
+      }).sort((a, b) => b.finalTotal - a.finalTotal);
+      
+      // Read from localStorage to get the persisted data
       const saved = localStorage.getItem('square-circle-game');
       let exportData;
       
@@ -160,6 +195,17 @@ export const GameStore = signalStore(
             gameState: persistedState.gameState,
             players: persistedState.players,
             matchScores: persistedState.matchScores,
+            finalRankings: finalRankings.map((p, index) => ({
+              position: index + 1,
+              firstName: p.firstName,
+              lastName: p.lastName,
+              playerNumber: p.number,
+              matchesPlayed: p.matchesPlayed,
+              wins: p.wins,
+              totalPoints: p.totalPoints,
+              currentMatchPoints: p.currentMatchPoints,
+              finalTotal: p.finalTotal,
+            })),
           };
         } catch (e) {
           console.error('Failed to parse saved state', e);
@@ -173,6 +219,17 @@ export const GameStore = signalStore(
           gameState: store.gameState(),
           players: store.players(),
           matchScores: store.matchScores(),
+          finalRankings: finalRankings.map((p, index) => ({
+            position: index + 1,
+            firstName: p.firstName,
+            lastName: p.lastName,
+            playerNumber: p.number,
+            matchesPlayed: p.matchesPlayed,
+            wins: p.wins,
+            totalPoints: p.totalPoints,
+            currentMatchPoints: p.currentMatchPoints,
+            finalTotal: p.finalTotal,
+          })),
         };
       }
 
@@ -180,7 +237,7 @@ export const GameStore = signalStore(
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `ronde-des-carres-export-${new Date().toISOString().split('T')[0]}.json`;
+      link.download = `ronde-des-carres-classement-final-${new Date().toISOString().split('T')[0]}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
