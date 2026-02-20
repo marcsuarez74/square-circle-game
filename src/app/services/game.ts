@@ -427,4 +427,21 @@ export class GameService {
     this.previousAssignments.clear();
     this.stateSubject.next({ ...this.state });
   }
+
+  syncPlayerReferences(): void {
+    // Replace player objects in courts and waiting queue with actual player service objects
+    // This ensures stat updates work correctly after loading from JSON
+    this.state.courts = this.state.courts.map((court) => ({
+      ...court,
+      players: court.players
+        .map((p) => this.playerService.getPlayerById(p.id))
+        .filter((p): p is Player => p !== undefined),
+    }));
+
+    this.state.waitingQueue = this.state.waitingQueue
+      .map((p) => this.playerService.getPlayerById(p.id))
+      .filter((p): p is Player => p !== undefined);
+
+    this.stateSubject.next({ ...this.state });
+  }
 }

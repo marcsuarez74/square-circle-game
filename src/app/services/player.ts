@@ -123,6 +123,10 @@ export class PlayerService {
     return [...this.players].sort((a, b) => b.totalPoints - a.totalPoints);
   }
 
+  getPlayerById(playerId: string): Player | undefined {
+    return this.players.find((p) => p.id === playerId);
+  }
+
   private generateId(): string {
     return Math.random().toString(36).substring(2, 15);
   }

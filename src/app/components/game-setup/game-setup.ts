@@ -324,8 +324,11 @@ export class GameSetup {
       // Restore game service state
       this.gameService.restoreGameState(this.importedGameState);
       
-      // Restore store state
-      this.store.setGameState(this.importedGameState);
+      // Sync player references to ensure courts point to actual player objects
+      this.gameService.syncPlayerReferences();
+      
+      // Restore store state with synced game state
+      this.store.setGameState(this.gameService.getCurrentState());
       this.store.setPlayers(players);
       
       // Restore match scores if available
