@@ -217,8 +217,8 @@ test.describe('Page de configuration de la partie', () => {
       // Cliquer sur démarrer
       await startBtn.click();
       
-      // Attendre la redirection
-      await page.waitForURL(/.*game/, { timeout: 10000 });
+      // Attendre la navigation vers la page de jeu (avec hash routing)
+      await page.waitForURL(/.*#\/game/, { timeout: 10000 });
       
       // Vérifier qu'on arrive sur la page de jeu
       await expect(page.locator('body')).toContainText('Terrain', { timeout: 10000 });
@@ -329,7 +329,7 @@ test.describe('Tests de flux complet', () => {
     const startBtn = page.locator('.start-btn');
     if (await startBtn.isEnabled({ timeout: 3000 }).catch(() => false)) {
       await startBtn.click();
-      await page.waitForURL(/.*game/, { timeout: 10000 });
+      await page.waitForURL(/.*#\/game/, { timeout: 10000 });
     }
   });
 
@@ -358,7 +358,7 @@ test.describe('Tests de flux complet', () => {
     await expect(startBtn).toBeEnabled({ timeout: 5000 });
     await startBtn.click();
     
-    await page.waitForURL(/.*game/, { timeout: 10000 });
+    await page.waitForURL(/.*#\/game/, { timeout: 10000 });
     await expect(page.locator('body')).toContainText('Terrain', { timeout: 10000 });
   });
 });

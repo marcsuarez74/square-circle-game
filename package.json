@@ -9,7 +9,8 @@
     "test": "ng test",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
-    "e2e:report": "playwright show-report"
+    "e2e:report": "playwright show-report",
+    "e2e:failed": "playwright test --last-failed"
   },
   "prettier": {
     "printWidth": 100,
@@ -45,13 +46,16 @@
     "zone.js": "^0.16.0"
   },
   "devDependencies": {
+    "@analogjs/vite-plugin-angular": "^2.2.3",
     "@angular/build": "^21.1.4",
     "@angular/cli": "^21.1.4",
     "@angular/compiler-cli": "^21.1.0",
     "@angular/material": "^21.1.5",
+    "@angular/platform-browser-dynamic": "^21.1.5",
     "@playwright/test": "^1.58.2",
-    "jsdom": "^27.1.0",
+    "jsdom": "^24.0.0",
     "typescript": "~5.9.2",
+    "vite": "^6.0.11",
     "vitest": "^4.0.8"
   }
 }
