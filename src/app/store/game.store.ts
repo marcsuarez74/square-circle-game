@@ -147,42 +147,44 @@ export const GameStore = signalStore(
     exportToJSON(): void {
       // First persist to ensure data is saved
       this.persistToStorage();
-      
+
       // Get current state
       const players = store.players();
       const gameState = store.gameState();
       const matchScores = store.matchScores();
-      
+
       // Calculate final rankings including current match scores
-      const finalRankings = players.map((player) => {
-        let currentMatchPoints = 0;
-        
-        if (gameState) {
-          for (const court of gameState.courts) {
-            const playerIndex = court.players.findIndex((p) => p.id === player.id);
-            if (playerIndex !== -1) {
-              const score = matchScores[court.id] || { team1: 0, team2: 0 };
-              
-              let isTeam1: boolean;
-              if (court.players.length === 4) {
-                isTeam1 = playerIndex < 2;
-              } else {
-                isTeam1 = playerIndex === 0;
+      const finalRankings = players
+        .map((player) => {
+          let currentMatchPoints = 0;
+
+          if (gameState) {
+            for (const court of gameState.courts) {
+              const playerIndex = court.players.findIndex((p) => p.id === player.id);
+              if (playerIndex !== -1) {
+                const score = matchScores[court.id] || { team1: 0, team2: 0 };
+
+                let isTeam1: boolean;
+                if (court.players.length === 4) {
+                  isTeam1 = playerIndex < 2;
+                } else {
+                  isTeam1 = playerIndex === 0;
+                }
+
+                currentMatchPoints = isTeam1 ? score.team1 : score.team2;
+                break;
               }
-              
-              currentMatchPoints = isTeam1 ? score.team1 : score.team2;
-              break;
             }
           }
-        }
-        
-        return {
-          ...player,
-          currentMatchPoints,
-          finalTotal: player.totalPoints + currentMatchPoints,
-        };
-      }).sort((a, b) => b.finalTotal - a.finalTotal);
-      
+
+          return {
+            ...player,
+            currentMatchPoints,
+            finalTotal: player.totalPoints + currentMatchPoints,
+          };
+        })
+        .sort((a, b) => b.finalTotal - a.finalTotal);
+
       // Read from localStorage to get the persisted data
       const saved = localStorage.getItem('square-circle-game');
       let exportData;

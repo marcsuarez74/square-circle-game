@@ -64,7 +64,8 @@ export class GameSetup {
 
   // Imported game data
   private importedGameState: GameState | null = null;
-  private importedMatchScores: { [courtId: number]: { team1: number; team2: number } } | null = null;
+  private importedMatchScores: { [courtId: number]: { team1: number; team2: number } } | null =
+    null;
 
   get isFormValid(): boolean {
     const players = this.playerService.getPlayers();
@@ -323,14 +324,14 @@ export class GameSetup {
     if (this.importedGameState) {
       // Restore game service state
       this.gameService.restoreGameState(this.importedGameState);
-      
+
       // Sync player references to ensure courts point to actual player objects
       this.gameService.syncPlayerReferences();
-      
+
       // Restore store state with synced game state
       this.store.setGameState(this.gameService.getCurrentState());
       this.store.setPlayers(players);
-      
+
       // Reset match scores to 0 - we start a new round
       // totalPoints already contains the cumulative scores from previous rounds
       this.store.resetMatchScores();
