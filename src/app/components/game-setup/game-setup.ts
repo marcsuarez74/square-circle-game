@@ -21,6 +21,7 @@ import { PlayerListComponent } from './components/player-list/player-list.compon
 import { FileImportComponent, FileImportEvent } from './components/file-import/file-import.component';
 import { GameConfigComponent } from './components/game-config/game-config.component';
 import { GameSummaryComponent } from './components/game-summary/game-summary.component';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-game-setup',
@@ -34,6 +35,7 @@ import { GameSummaryComponent } from './components/game-summary/game-summary.com
     FileImportComponent,
     GameConfigComponent,
     GameSummaryComponent,
+    MatIcon,
   ],
   templateUrl: './game-setup.html',
   styleUrl: './game-setup.scss',

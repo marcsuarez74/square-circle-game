@@ -1,108 +1,140 @@
-.players-section {
-  margin-top: 24px;
+:host {
+  display: block;
+}
 
-  .players-header {
+.players-section {
+  margin-top: 4px;
+}
+
+.players-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .players-count {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    background: var(--bg-tertiary);
+    padding: 4px 12px;
+    border-radius: 12px;
+  }
+}
+
+.players-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  transition: all 0.15s ease;
+  flex: 0 0 auto;
+
+  &:hover {
+    border-color: var(--text-secondary);
+  }
+
+  .player-avatar {
+    width: 28px;
+    height: 28px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
 
-    h3 {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .players-count {
-      background: #667eea;
-      color: white;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
+  .player-info {
+    .player-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-primary);
     }
   }
 
-  .players-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
+  .delete-btn {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: all 0.15s ease;
 
-    .player-card {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px;
-      background: #f5f5f5;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-
-      &:hover {
-        background: #e8e8e8;
-      }
-
-      .player-avatar {
-        width: 40px;
-        height: 40px;
-        background: #667eea;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 14px;
-      }
-
-      .player-info {
-        flex: 1;
-
-        .player-name {
-          font-weight: 500;
-        }
-      }
-
-      .delete-btn {
-        opacity: 0;
-        transition: opacity 0.2s;
-      }
-
-      &:hover .delete-btn {
-        opacity: 1;
-      }
+    &:hover {
+      color: var(--error);
     }
-  }
-
-  .players-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 16px;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 32px;
-    color: #666;
 
     mat-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
-      margin-bottom: 12px;
-      color: #ccc;
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
     }
+  }
 
-    p {
-      margin: 4px 0;
+  &:hover .delete-btn {
+    opacity: 1;
+  }
+}
+
+.players-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+
+  button {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--error);
     }
+  }
+}
 
-    .text-sm {
-      font-size: 14px;
-    }
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
 
-    .text-gray {
-      color: #999;
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.3;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+
+    &:last-child {
+      margin-top: 4px;
+      font-size: 0.8rem;
+      opacity: 0.7;
     }
   }
 }

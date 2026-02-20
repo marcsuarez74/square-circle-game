@@ -1,64 +1,65 @@
+:host {
+  display: block;
+}
+
 .import-sections {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
 
-  .import-section {
-    .drop-zone {
-      border: 2px dashed #ccc;
-      border-radius: 8px;
-      padding: 24px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
 
-      &:hover {
-        border-color: #667eea;
-        background: rgba(102, 126, 234, 0.05);
-      }
+.import-section {
+  .drop-zone {
+    border: 1px dashed var(--border-color);
+    border-radius: var(--border-radius-sm);
+    padding: 20px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--bg-secondary);
 
-      &.dragging {
-        border-color: #667eea;
-        background: rgba(102, 126, 234, 0.1);
-      }
-
-      mat-icon {
-        font-size: 32px;
-        width: 32px;
-        height: 32px;
-        color: #667eea;
-        margin-bottom: 8px;
-      }
-
-      .drop-text {
-        font-weight: 600;
-        color: #333;
-        margin: 0 0 4px 0;
-      }
-
-      .drop-hint {
-        font-size: 12px;
-        color: #666;
-        margin: 0;
-      }
+    &:hover {
+      border-color: var(--text-secondary);
+      background: var(--bg-hover);
     }
 
-    &.json-import {
-      .drop-zone {
-        mat-icon {
-          color: #4caf50;
-        }
+    &.dragging {
+      border-color: var(--accent-primary);
+      border-style: solid;
+      background: var(--bg-hover);
+    }
 
-        &:hover {
-          border-color: #4caf50;
-          background: rgba(76, 175, 80, 0.05);
-        }
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
 
-        &.dragging {
-          border-color: #4caf50;
-          background: rgba(76, 175, 80, 0.1);
-        }
+    .drop-text {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin: 0 0 4px 0;
+    }
+
+    .drop-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+  }
+
+  &.json-import {
+    .drop-zone {
+      mat-icon {
+        color: var(--success);
       }
     }
   }
