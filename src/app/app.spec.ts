@@ -42,9 +42,7 @@ describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppMock],
-      providers: [
-        provideRouter(testRoutes, withHashLocation()),
-      ],
+      providers: [provideRouter(testRoutes, withHashLocation())],
     }).compileComponents();
   });
 
