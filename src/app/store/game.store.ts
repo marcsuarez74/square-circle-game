@@ -147,11 +147,11 @@ export const GameStore = signalStore(
     exportToJSON(): void {
       // First persist to ensure data is saved
       this.persistToStorage();
-      
+
       // Read from localStorage to get the latest persisted data
       const saved = localStorage.getItem('square-circle-game');
       let exportData;
-      
+
       if (saved) {
         try {
           const persistedState = JSON.parse(saved);
@@ -165,7 +165,7 @@ export const GameStore = signalStore(
           console.error('Failed to parse saved state', e);
         }
       }
-      
+
       // Fallback to current store if localStorage fails
       if (!exportData) {
         exportData = {

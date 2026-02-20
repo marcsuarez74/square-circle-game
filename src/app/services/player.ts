@@ -73,14 +73,14 @@ export class PlayerService {
       number: index + 1,
     }));
     this.nextNumber = players.length + 1;
-    
+
     // Restore encounters map
     players.forEach((p) => {
       if (!this.playerEncounters.has(p.id)) {
         this.playerEncounters.set(p.id, new Set());
       }
     });
-    
+
     this.playersSubject.next([...this.players]);
   }
 

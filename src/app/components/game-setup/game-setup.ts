@@ -64,7 +64,8 @@ export class GameSetup {
 
   // Imported game data
   private importedGameState: GameState | null = null;
-  private importedMatchScores: { [courtId: number]: { team1: number; team2: number } } | null = null;
+  private importedMatchScores: { [courtId: number]: { team1: number; team2: number } } | null =
+    null;
 
   get isFormValid(): boolean {
     const players = this.playerService.getPlayers();
@@ -323,11 +324,11 @@ export class GameSetup {
     if (this.importedGameState) {
       // Restore game service state
       this.gameService.restoreGameState(this.importedGameState);
-      
+
       // Restore store state
       this.store.setGameState(this.importedGameState);
       this.store.setPlayers(players);
-      
+
       // Restore match scores if available
       if (this.importedMatchScores) {
         Object.entries(this.importedMatchScores).forEach(([courtId, scores]) => {
