@@ -69,6 +69,19 @@ export class GameArena implements OnInit, OnDestroy {
     // Initialize scores for courts
     this.initializeScores();
 
+    // Subscribe to timer updates from game service
+    this.gameService.getState$().subscribe((state) => {
+      // Only update timer-related properties, preserve other state like matchScores
+      const currentState = this.gameState();
+      if (currentState) {
+        this.store.setGameState({
+          ...currentState,
+          remainingTime: state.remainingTime,
+          isTimerRunning: state.isTimerRunning,
+        });
+      }
+    });
+
     // Auto-save every 10 seconds
     this.saveInterval = setInterval(() => {
       this.saveGame();
