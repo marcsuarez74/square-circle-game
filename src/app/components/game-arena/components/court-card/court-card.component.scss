@@ -140,10 +140,15 @@
         }
 
         input {
-          text-align: center;
-          font-size: 1.1rem;
+          text-align: left;
+          font-size: 1rem;
           font-weight: 600;
           color: var(--text-primary);
+          padding-left: 12px;
+        }
+
+        .mat-mdc-form-field-label {
+          padding-left: 12px;
         }
       }
     }

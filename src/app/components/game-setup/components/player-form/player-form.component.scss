@@ -36,6 +36,12 @@
 
       input.mat-mdc-input-element {
         color: var(--text-primary) !important;
+        text-align: left;
+        padding-left: 12px;
+      }
+
+      .mat-mdc-form-field-label {
+        padding-left: 12px;
       }
     }
   }
