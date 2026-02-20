@@ -198,10 +198,7 @@
   padding: 24px;
 }
 
-@mixin grid-2(
-  $gap: 24px,
-  $sidebar-width: 320px
-) {
+@mixin grid-2($gap: 24px, $sidebar-width: 320px) {
   display: grid;
   grid-template-columns: 1fr $sidebar-width;
   gap: $gap;

@@ -18,7 +18,10 @@ import { GameState } from '../../models/game-state.model';
 // Dumb Components
 import { PlayerFormComponent } from './components/player-form/player-form.component';
 import { PlayerListComponent } from './components/player-list/player-list.component';
-import { FileImportComponent, FileImportEvent } from './components/file-import/file-import.component';
+import {
+  FileImportComponent,
+  FileImportEvent,
+} from './components/file-import/file-import.component';
 import { GameConfigComponent } from './components/game-config/game-config.component';
 import { GameSummaryComponent } from './components/game-summary/game-summary.component';
 import { MatIcon } from '@angular/material/icon';
@@ -56,7 +59,8 @@ export class GameSetup {
 
   // Imported game state
   private importedGameState: GameState | null = null;
-  private importedMatchScores: { [courtId: number]: { team1: number; team2: number } } | null = null;
+  private importedMatchScores: { [courtId: number]: { team1: number; team2: number } } | null =
+    null;
 
   // Player list from service (signal)
   players = computed(() => this.playerService.players());

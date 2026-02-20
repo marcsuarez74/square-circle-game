@@ -28,7 +28,7 @@ export class PlayerService {
     };
 
     this.playerEncounters.set(player.id, new Set());
-    this.playersSignal.update(players => [...players, player]);
+    this.playersSignal.update((players) => [...players, player]);
     return player;
   }
 
@@ -44,12 +44,12 @@ export class PlayerService {
     }));
 
     newPlayers.forEach((p) => this.playerEncounters.set(p.id, new Set()));
-    this.playersSignal.update(players => [...players, ...newPlayers]);
+    this.playersSignal.update((players) => [...players, ...newPlayers]);
   }
 
   removePlayer(playerId: string): void {
     this.playerEncounters.delete(playerId);
-    this.playersSignal.update(players => players.filter((p) => p.id !== playerId));
+    this.playersSignal.update((players) => players.filter((p) => p.id !== playerId));
   }
 
   clearPlayers(): void {
@@ -76,8 +76,8 @@ export class PlayerService {
   }
 
   updatePlayerStats(playerId: string, won: boolean, teamScore: number): void {
-    this.playersSignal.update(players => {
-      return players.map(player => {
+    this.playersSignal.update((players) => {
+      return players.map((player) => {
         if (player.id === playerId) {
           return {
             ...player,

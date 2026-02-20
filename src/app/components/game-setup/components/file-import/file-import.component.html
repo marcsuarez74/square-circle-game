@@ -27,13 +27,7 @@
 
   <!-- JSON Import -->
   <div class="import-section json-import">
-    <input
-      type="file"
-      #jsonFileInput
-      accept=".json"
-      (change)="onJsonFileSelected($event)"
-      hidden
-    />
+    <input type="file" #jsonFileInput accept=".json" (change)="onJsonFileSelected($event)" hidden />
 
     <div
       class="drop-zone json-zone"
