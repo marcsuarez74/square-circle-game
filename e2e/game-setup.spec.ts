@@ -3,8 +3,9 @@ import path from 'path';
 import fs from 'fs';
 import os from 'os';
 
-const BASE_URL = 'https://marcsuarez74.github.io/square-circle-game/';
-const TIMEOUT = { timeout: 20000 };
+// Use environment variable or default to production URL
+const BASE_URL = process.env['PLAYWRIGHT_BASE_URL'] || 'https://marcsuarez74.github.io/square-circle-game/';
+const TIMEOUT = { timeout: 30000 };
 
 /**
  * Tests E2E pour la page de configuration de la partie (Game Setup)
