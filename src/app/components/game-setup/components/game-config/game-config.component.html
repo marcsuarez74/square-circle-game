@@ -24,7 +24,11 @@
         }
       </div>
       <mat-slider min="1" max="10" step="1" class="full-width">
-        <input matSliderThumb [ngModel]="numberOfCourts()" (ngModelChange)="onCourtsChange($event)" />
+        <input
+          matSliderThumb
+          [ngModel]="numberOfCourts()"
+          (ngModelChange)="onCourtsChange($event)"
+        />
       </mat-slider>
     </div>
 
@@ -34,9 +38,7 @@
         <mat-icon>timer</mat-icon>
         Durée du match
         @if (matchDurationMinutes()) {
-          <span class="duration-display">
-            ({{ formatDuration(matchDurationMinutes()!) }})</span
-          >
+          <span class="duration-display"> ({{ formatDuration(matchDurationMinutes()!) }})</span>
         }
       </div>
       <div class="timer-grid">

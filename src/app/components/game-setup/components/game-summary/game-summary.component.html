@@ -7,11 +7,7 @@
   </mat-card-header>
   <mat-card-content>
     <!-- Validation Status -->
-    <div
-      class="validation-status"
-      [class.valid]="isFormValid()"
-      [class.invalid]="!isFormValid()"
-    >
+    <div class="validation-status" [class.valid]="isFormValid()" [class.invalid]="!isFormValid()">
       <mat-icon>
         {{ isFormValid() ? 'check_circle' : 'error' }}
       </mat-icon>
@@ -64,12 +60,7 @@
       }
     }
 
-    <button
-      mat-raised-button
-      class="start-btn"
-      (click)="onStartGame()"
-      [disabled]="!isFormValid()"
-    >
+    <button mat-raised-button class="start-btn" (click)="onStartGame()" [disabled]="!isFormValid()">
       <mat-icon>sports_tennis</mat-icon>
       Lancer la partie
     </button>

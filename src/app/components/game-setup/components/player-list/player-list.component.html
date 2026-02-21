@@ -10,9 +10,7 @@
         <div class="player-card">
           <div class="player-avatar">{{ player.number }}</div>
           <div class="player-info">
-            <div class="player-name">
-              {{ player.firstName }} {{ player.lastName }}
-            </div>
+            <div class="player-name">{{ player.firstName }} {{ player.lastName }}</div>
           </div>
           <button
             mat-icon-button
@@ -37,9 +35,7 @@
     <div class="empty-state">
       <mat-icon>group_off</mat-icon>
       <p>Aucun joueur inscrit</p>
-      <p class="text-sm text-gray">
-        Ajoutez des joueurs ou importez un fichier Excel
-      </p>
+      <p class="text-sm text-gray">Ajoutez des joueurs ou importez un fichier Excel</p>
     </div>
   }
 </div>
