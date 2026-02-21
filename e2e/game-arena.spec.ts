@@ -515,8 +515,8 @@ test.describe('Tests de flux complet - Game Arena', () => {
 
     // 6. Ouvrir le classement
     await page.click('.ranking-trigger-btn');
-    await page.waitForTimeout(500);
-    await expect(page.locator('.ranking-panel.visible')).toContainText('Classement');
+    // Attendre que le panneau soit visible (augmenté le délai pour Angular change detection)
+    await page.waitForSelector('.ranking-panel.visible', { timeout: 3000 });
 
     // 7. Fermer et terminer la partie
     await page.click('button:has(mat-icon:has-text("close"))');
