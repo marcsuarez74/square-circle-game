@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, computed } from '@angular/core';
+import { Component, model, output, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,10 +16,11 @@ import { GameStore } from '../../store/game.store';
 export class RankingPanel {
   protected store = inject(GameStore);
 
-  @Input() isVisible = false;
+  // Signal model for two-way binding
+  isVisible = model(false);
 
-  @Output() close = new EventEmitter<void>();
-  @Output() export = new EventEmitter<void>();
+  close = output<void>();
+  export = output<void>();
 
   // Computed sorted players with cumulative match scores
   protected sortedPlayersWithCurrentScores = computed(() => {

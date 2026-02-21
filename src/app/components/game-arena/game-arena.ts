@@ -222,7 +222,7 @@ export class GameArena implements OnInit, OnDestroy {
   }
 
   toggleRankingPanel(): void {
-    this.isRankingPanelVisible.update((visible) => !visible);
+    this.isRankingPanelVisible.set(!this.isRankingPanelVisible());
   }
 
   hideRankingPanel(): void {

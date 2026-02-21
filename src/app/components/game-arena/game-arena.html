@@ -2,7 +2,7 @@
   <div class="arena-container">
     <!-- Ranking Panel -->
     <app-ranking-panel
-      [isVisible]="isRankingPanelVisible()"
+      [(isVisible)]="isRankingPanelVisible"
       (close)="hideRankingPanel()"
       (export)="showMessage('Partie exportée !')"
     >
