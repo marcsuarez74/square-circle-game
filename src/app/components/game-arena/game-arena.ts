@@ -16,7 +16,7 @@ import {
   TimerComponent,
   ArenaControlsComponent,
   WaitingQueueComponent,
-  CourtScore,
+  type CourtScore,
 } from './components';
 
 // Services & Models
