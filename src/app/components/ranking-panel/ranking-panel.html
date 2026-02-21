@@ -1,14 +1,4 @@
 <div class="ranking-panel-container" [class.open]="isVisible">
-  <!-- Trigger Button -->
-  <button
-    class="ranking-trigger"
-    (click)="isVisible ? onClose() : null"
-    [class.active]="isVisible"
-    *ngIf="!isVisible"
-  >
-    <mat-icon>emoji_events</mat-icon>
-  </button>
-
   <!-- Panel -->
   <div class="ranking-panel" [class.visible]="isVisible">
     <div class="ranking-header">
