@@ -21,6 +21,7 @@ import {
 
 // Services & Models
 import { GameService } from '../../services/game';
+import { PlayerService } from '../../services/player';
 import { GameStore } from '../../store/game.store';
 import { GameState } from '../../models/game-state.model';
 import { Court } from '../../models/court.model';
@@ -49,6 +50,7 @@ import { ConfirmDialog, ConfirmDialogData } from '../confirm-dialog/confirm-dial
 export class GameArena implements OnInit, OnDestroy {
   private store = inject(GameStore);
   private gameService = inject(GameService);
+  private playerService = inject(PlayerService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
@@ -67,9 +69,34 @@ export class GameArena implements OnInit, OnDestroy {
   private saveInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
-    if (!this.isGameActive()) {
+    // Try to load saved game state first
+    const hasSavedGame = this.store.loadFromStorage();
+    
+    // If no saved game and no active game, redirect to setup
+    if (!hasSavedGame && !this.isGameActive()) {
       this.router.navigate(['game-setup']);
       return;
+    }
+
+    // If we loaded from storage, synchronize services
+    if (hasSavedGame) {
+      const gameState = this.gameState();
+      const players = this.players();
+      
+      if (gameState) {
+        // Restore GameService state
+        this.gameService.restoreGameState(gameState);
+        
+        // Restore PlayerService players
+        if (players.length > 0) {
+          this.playerService.restorePlayers(players);
+        }
+        
+        // Sync game service player references
+        this.gameService.syncPlayerReferences();
+        
+        this.showMessage('Partie restaurée depuis la sauvegarde');
+      }
     }
 
     this.initializeScores();
