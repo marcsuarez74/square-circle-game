@@ -57,7 +57,7 @@
   top: 88px;
 
   @media (max-width: 968px) {
-    order: -1;
+    order: 1; // En mobile, le recap va en BAS (après le contenu principal)
     position: static;
     align-self: auto;
   }
