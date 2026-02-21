@@ -1,8 +1,15 @@
 @use '../../../../../styles/design-system' as ds;
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(251, 191, 36, 0.6), 0 0 60px rgba(251, 191, 36, 0.3); }
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(251, 191, 36, 0.6),
+      0 0 60px rgba(251, 191, 36, 0.3);
+  }
 }
 
 .winner-section {
@@ -17,8 +24,9 @@
     justify-content: center;
     gap: 24px;
     padding: 32px;
-    background: linear-gradient(135deg, 
-      rgba(251, 191, 36, 0.15) 0%, 
+    background: linear-gradient(
+      135deg,
+      rgba(251, 191, 36, 0.15) 0%,
       rgba(245, 158, 11, 0.1) 50%,
       rgba(251, 191, 36, 0.15) 100%
     );

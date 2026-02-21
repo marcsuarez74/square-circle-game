@@ -49,12 +49,13 @@
     }
 
     &.top-3 {
-      background: linear-gradient(90deg, 
+      background: linear-gradient(
+        90deg,
         rgba(251, 191, 36, 0.1) 0%,
         rgba(251, 191, 36, 0.05) 50%,
         transparent 100%
       );
-      
+
       &:nth-child(1) {
         border-left: 4px solid #ffd700;
       }
