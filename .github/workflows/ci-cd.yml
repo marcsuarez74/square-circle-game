@@ -108,7 +108,7 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: npm test -- --watch=false --browsers=ChromeHeadless --no-progress
+        run: npx vitest run --pool=forks
         continue-on-error: true
 
   e2e:
