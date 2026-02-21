@@ -71,7 +71,9 @@ export class GameTerminate {
   // ===== Event Handlers =====
 
   onDeleteGame(): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette partie ? Cette action est irréversible.')) {
+    if (
+      confirm('Êtes-vous sûr de vouloir supprimer cette partie ? Cette action est irréversible.')
+    ) {
       this.store.clearStorage();
       this.showMessage('Partie supprimée avec succès');
       this.router.navigate(['/game-setup']);
@@ -101,24 +103,24 @@ export class GameTerminate {
   onNewGame(): void {
     // Garder les joueurs mais réinitialiser tout le reste
     const currentPlayers = this.players();
-    
+
     // Reset le store (garde les joueurs, reset le gameState et les scores)
     this.store.setGameState(null as any);
     this.store.resetMatchScores();
-    
+
     // Pour chaque joueur, reset leurs stats
-    const resetPlayers = currentPlayers.map(player => ({
+    const resetPlayers = currentPlayers.map((player) => ({
       ...player,
       totalPoints: 0,
       matchesPlayed: 0,
       wins: 0,
     }));
-    
+
     this.store.setPlayers(resetPlayers);
-    
+
     // Sauvegarder le nouvel état (joueurs reset mais présents)
     this.store.persistToStorage();
-    
+
     this.showMessage('Nouvelle partie prête ! Les joueurs sont conservés.');
     this.router.navigate(['/game-setup']);
   }
@@ -134,7 +136,7 @@ export class GameTerminate {
 
     doc.setFontSize(14);
     doc.text('Informations de la partie', 14, 45);
-    
+
     doc.setFontSize(11);
     doc.text(`• Nombre de manches: ${state.currentSet}`, 14, 55);
     doc.text(`• Nombre de joueurs: ${rankings.length}`, 14, 62);

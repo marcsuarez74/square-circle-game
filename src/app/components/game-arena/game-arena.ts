@@ -71,10 +71,10 @@ export class GameArena implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Try to load saved game state first
     const hasSavedGame = this.store.loadFromStorage();
-    
+
     // Check if we have an active game after loading
     const hasActiveGame = this.isGameActive();
-    
+
     // If no game at all, redirect to setup
     if (!hasActiveGame) {
       this.router.navigate(['game-setup']);
@@ -84,22 +84,22 @@ export class GameArena implements OnInit, OnDestroy {
     // We have an active game - get current state
     const gameState = this.gameState();
     const players = this.players();
-    
+
     if (hasSavedGame && gameState) {
       // Restore GameService state from storage
       this.gameService.restoreGameState(gameState);
-      
+
       // Restore PlayerService players
       if (players.length > 0) {
         this.playerService.restorePlayers(players);
       }
-      
+
       // Sync game service player references
       this.gameService.syncPlayerReferences();
-      
+
       this.showMessage('Partie restaurée depuis la sauvegarde');
     }
-    
+
     // Always initialize scores for any active game
     // This ensures courts have score entries even after refresh
     this.initializeScores();
@@ -254,13 +254,13 @@ export class GameArena implements OnInit, OnDestroy {
   endGame(): void {
     // Sauvegarder les résultats finaux
     this.saveMatchResults();
-    
+
     // Persister dans le localStorage avant redirection
     this.store.persistToStorage();
-    
+
     // Afficher message de confirmation
     this.showMessage('Partie terminée ! Redirection vers le récapitulatif...');
-    
+
     // Rediriger vers la page de terminaison
     this.router.navigate(['/terminate']);
   }

@@ -227,7 +227,7 @@ export class GameSetup {
   private startNewGame(players: any[]): void {
     // Réinitialiser complètement pour une nouvelle partie
     this.store.resetMatchScores();
-    
+
     this.gameService.setConfig({
       numberOfCourts: this.numberOfCourts,
       matchDuration: this.matchDurationMinutes! * 60,
@@ -238,7 +238,7 @@ export class GameSetup {
     const gameState = this.gameService.getCurrentState();
     this.store.setGameState(gameState);
     this.store.setPlayers(players);
-    
+
     // Sauvegarder immédiatement la nouvelle partie
     this.store.persistToStorage();
 
