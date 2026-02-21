@@ -5,11 +5,13 @@ import { provideHttpClient } from '@angular/common/http';
 
 import { GameSetup } from './components/game-setup/game-setup';
 import { GameArena } from './components/game-arena/game-arena';
+import { GameTerminate } from './components/game-terminate/game-terminate';
 import { GameStore } from './store/game.store';
 
 const routes: Routes = [
   { path: 'game-setup', component: GameSetup },
   { path: 'game', component: GameArena },
+  { path: 'terminate', component: GameTerminate },
   { path: '', redirectTo: 'game-setup', pathMatch: 'full' },
   { path: '**', redirectTo: 'game-setup' },
 ];

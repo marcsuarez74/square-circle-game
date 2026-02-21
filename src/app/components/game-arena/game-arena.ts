@@ -222,16 +222,17 @@ export class GameArena implements OnInit, OnDestroy {
   }
 
   endGame(): void {
+    // Sauvegarder les résultats finaux
     this.saveMatchResults();
+    
+    // Persister dans le localStorage avant redirection
     this.store.persistToStorage();
-    this.store.exportToJSON();
-
-    this.showMessage('Partie terminée ! Résultats exportés.');
-    this.store.clearStorage();
-
-    setTimeout(() => {
-      this.router.navigate(['game-setup']);
-    }, 3000);
+    
+    // Afficher message de confirmation
+    this.showMessage('Partie terminée ! Redirection vers le récapitulatif...');
+    
+    // Rediriger vers la page de terminaison
+    this.router.navigate(['/terminate']);
   }
 
   protected showMessage(message: string): void {

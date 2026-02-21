@@ -1,0 +1,125 @@
+<div class="terminate-container">
+  <div class="terminate-content">
+    <!-- Header -->
+    <header class="terminate-header">
+      <mat-icon class="trophy-icon">emoji_events</mat-icon>
+      <h1>Partie Terminée !</h1>
+      <p class="subtitle">Merci à tous les joueurs pour leur participation</p>
+    </header>
+
+    @if (gameState()) {
+      <!-- Game Summary Card -->
+      <mat-card class="summary-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>summarize</mat-icon>
+            Récapitulatif de la partie
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <mat-icon>sports_tennis</mat-icon>
+              <div class="stat-value">{{ currentSet() }}</div>
+              <div class="stat-label">Manches jouées</div>
+            </div>
+            
+            <div class="stat-item">
+              <mat-icon>group</mat-icon>
+              <div class="stat-value">{{ totalPlayers() }}</div>
+              <div class="stat-label">Joueurs participants</div>
+            </div>
+            
+            <div class="stat-item">
+              <mat-icon>timer</mat-icon>
+              <div class="stat-value">{{ totalCourts() }}</div>
+              <div class="stat-label">Terrains utilisés</div>
+            </div>
+          </div>
+
+          @if (winningTeam()) {
+            <div class="winner-section">
+              <mat-divider></mat-divider>
+              <div class="winner-content">
+                <mat-icon class="winner-icon">star</mat-icon>
+                <div class="winner-info">
+                  <div class="winner-label">Gagnant</div>
+                  <div class="winner-name">
+                    {{ winningTeam()?.firstName }} {{ winningTeam()?.lastName }}
+                  </div>
+                  <div class="winner-stats">
+                    {{ winningTeam()?.totalPoints }} points • {{ winningTeam()?.wins }} victoires
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Rankings Card -->
+      <mat-card class="rankings-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>format_list_numbered</mat-icon>
+            Classement final
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="rankings-list">
+            @for (player of rankings(); track player.id; let i = $index) {
+              <div class="ranking-item" [class.top-3]="i < 3">
+                <div class="rank-position">{{ i + 1 }}</div>
+                <div class="rank-player">
+                  <div class="player-name">{{ player.firstName }} {{ player.lastName }}</div>
+                  <div class="player-stats">
+                    {{ player.matchesPlayed }} matchs • {{ player.wins }} victoires
+                  </div>
+                </div>
+                <div class="rank-points">{{ player.totalPoints }}</div>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Thank You Section -->
+      <div class="thank-you-section">
+        <mat-icon>favorite</mat-icon>
+        <h2>Merci à tous !</h2>
+        <p>
+          Nous espérons que vous avez apprécié cette partie de badminton.
+          À bientôt pour de nouvelles parties !
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" (click)="exportToPDF()">
+          <mat-icon>picture_as_pdf</mat-icon>
+          Exporter en PDF
+        </button>
+
+        <button mat-stroked-button color="warn" (click)="deleteGame()">
+          <mat-icon>delete</mat-icon>
+          Supprimer la partie
+        </button>
+
+        <button mat-stroked-button (click)="backToSetup()">
+          <mat-icon>home</mat-icon>
+          Retour à l'accueil
+        </button>
+      </div>
+    } @else {
+      <mat-card class="no-data-card">
+        <mat-card-content>
+          <mat-icon>info</mat-icon>
+          <p>Aucune donnée de partie disponible</p>
+          <button mat-raised-button color="primary" (click)="backToSetup()">
+            Commencer une nouvelle partie
+          </button>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>

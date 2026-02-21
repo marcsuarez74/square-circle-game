@@ -40,17 +40,8 @@
         padding-left: 12px;
       }
 
-      // Label centré verticalement quand pas focus
-      .mat-mdc-floating-label {
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-      }
-
-      // Label aligné à gauche quand focus ou rempli
-      .mdc-text-field--focused .mat-mdc-floating-label,
-      .mdc-text-field--floating-label .mat-mdc-floating-label {
-        left: 16px !important;
-        transform: translateY(-106%) translateX(0) scale(0.75) !important;
+      .mat-mdc-form-field-label {
+        padding-left: 12px;
       }
     }
   }
