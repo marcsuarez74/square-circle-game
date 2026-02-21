@@ -72,38 +72,37 @@ export class GameArena implements OnInit, OnDestroy {
     // Try to load saved game state first
     const hasSavedGame = this.store.loadFromStorage();
     
-    // Check if we have an active game (either from storage or current session)
+    // Check if we have an active game after loading
     const hasActiveGame = this.isGameActive();
     
-    // If no saved game AND no active game, redirect to setup
-    if (!hasSavedGame && !hasActiveGame) {
+    // If no game at all, redirect to setup
+    if (!hasActiveGame) {
       this.router.navigate(['game-setup']);
       return;
     }
 
-    // If we loaded from storage, synchronize services
-    if (hasSavedGame && hasActiveGame) {
-      const gameState = this.gameState();
-      const players = this.players();
+    // We have an active game - get current state
+    const gameState = this.gameState();
+    const players = this.players();
+    
+    if (hasSavedGame && gameState) {
+      // Restore GameService state from storage
+      this.gameService.restoreGameState(gameState);
       
-      if (gameState) {
-        // Restore GameService state
-        this.gameService.restoreGameState(gameState);
-        
-        // Restore PlayerService players
-        if (players.length > 0) {
-          this.playerService.restorePlayers(players);
-        }
-        
-        // Sync game service player references
-        this.gameService.syncPlayerReferences();
-        
-        this.showMessage('Partie restaurée depuis la sauvegarde');
+      // Restore PlayerService players
+      if (players.length > 0) {
+        this.playerService.restorePlayers(players);
       }
-    } else if (!hasSavedGame && hasActiveGame) {
-      // New game just started - initialize default scores if needed
-      this.initializeScores();
+      
+      // Sync game service player references
+      this.gameService.syncPlayerReferences();
+      
+      this.showMessage('Partie restaurée depuis la sauvegarde');
     }
+    
+    // Always initialize scores for any active game
+    // This ensures courts have score entries even after refresh
+    this.initializeScores();
 
     this.gameService.getState$().subscribe((state) => {
       const currentState = this.gameState();
