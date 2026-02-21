@@ -40,13 +40,16 @@
 .player-card {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 10px;
+  padding: 10px 14px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-sm);
   transition: all 0.15s ease;
-  flex: 0 0 auto;
+  width: 180px;
+  min-width: 180px;
+  height: 48px;
+  box-sizing: border-box;
 
   &:hover {
     border-color: var(--text-secondary);
@@ -63,13 +66,20 @@
     justify-content: center;
     font-size: 0.75rem;
     font-weight: 600;
+    flex-shrink: 0;
   }
 
   .player-info {
+    flex: 1;
+    overflow: hidden;
+    
     .player-name {
       font-size: 0.9rem;
       font-weight: 500;
       color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
@@ -80,6 +90,7 @@
     color: var(--text-muted);
     opacity: 0;
     transition: all 0.15s ease;
+    flex-shrink: 0;
 
     &:hover {
       color: var(--error);

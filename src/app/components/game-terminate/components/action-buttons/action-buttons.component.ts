@@ -13,5 +13,5 @@ import { MatIconModule } from '@angular/material/icon';
 export class ActionButtonsComponent {
   exportPdf = output<void>();
   deleteGame = output<void>();
-  backToSetup = output<void>();
+  newGame = output<void>();
 }

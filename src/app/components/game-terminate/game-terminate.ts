@@ -94,7 +94,28 @@ export class GameTerminate {
     this.showMessage('PDF exporté avec succès');
   }
 
-  onBackToSetup(): void {
+  onNewGame(): void {
+    // Garder les joueurs mais réinitialiser tout le reste
+    const currentPlayers = this.players();
+    
+    // Reset le store (garde les joueurs, reset le gameState et les scores)
+    this.store.setGameState(null as any);
+    this.store.resetMatchScores();
+    
+    // Pour chaque joueur, reset leurs stats
+    const resetPlayers = currentPlayers.map(player => ({
+      ...player,
+      totalPoints: 0,
+      matchesPlayed: 0,
+      wins: 0,
+    }));
+    
+    this.store.setPlayers(resetPlayers);
+    
+    // Sauvegarder le nouvel état (joueurs reset mais présents)
+    this.store.persistToStorage();
+    
+    this.showMessage('Nouvelle partie prête ! Les joueurs sont conservés.');
     this.router.navigate(['/game-setup']);
   }
 
