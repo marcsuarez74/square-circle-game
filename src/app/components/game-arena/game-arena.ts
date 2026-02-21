@@ -72,17 +72,19 @@ export class GameArena implements OnInit, OnDestroy {
     // Try to load saved game state first
     const hasSavedGame = this.store.loadFromStorage();
     
-    // If no saved game and no active game, redirect to setup
-    if (!hasSavedGame && !this.isGameActive()) {
+    // Check if we have an active game (either from storage or current session)
+    const hasActiveGame = this.isGameActive();
+    
+    // If no saved game AND no active game, redirect to setup
+    if (!hasSavedGame && !hasActiveGame) {
       this.router.navigate(['game-setup']);
       return;
     }
 
     // If we loaded from storage, synchronize services
-    if (hasSavedGame) {
+    if (hasSavedGame && hasActiveGame) {
       const gameState = this.gameState();
       const players = this.players();
-      const matchScores = this.matchScores();
       
       if (gameState) {
         // Restore GameService state
@@ -93,35 +95,15 @@ export class GameArena implements OnInit, OnDestroy {
           this.playerService.restorePlayers(players);
         }
         
-        // Restore match scores in GameService if needed
-        // (scores are already in the store from loadFromStorage)
-        
         // Sync game service player references
         this.gameService.syncPlayerReferences();
         
         this.showMessage('Partie restaurée depuis la sauvegarde');
-        
-        // Skip initializing scores - they're already loaded from storage
-        // Only initialize timer subscription
-        this.gameService.getState$().subscribe((state) => {
-          const currentState = this.gameState();
-          if (currentState) {
-            this.store.setGameState({
-              ...currentState,
-              remainingTime: state.remainingTime,
-              isTimerRunning: state.isTimerRunning,
-            });
-          }
-        });
-
-        this.saveInterval = setInterval(() => this.saveGame(), 10000);
-        window.addEventListener('beforeunload', this.handleBeforeUnload.bind(this));
-        return;
       }
+    } else if (!hasSavedGame && hasActiveGame) {
+      // New game just started - initialize default scores if needed
+      this.initializeScores();
     }
-
-    // Only initialize scores for NEW games (not restored ones)
-    this.initializeScores();
 
     this.gameService.getState$().subscribe((state) => {
       const currentState = this.gameState();
