@@ -1,6 +1,6 @@
 <div class="terminate-container">
   <div class="terminate-content">
-    <!-- Header avec animations -->
+    <!-- Header -->
     <header class="terminate-header">
       <mat-icon class="trophy-icon">emoji_events</mat-icon>
       <h1>Partie Terminée !</h1>
@@ -8,7 +8,7 @@
     </header>
 
     @if (gameState()) {
-      <!-- Game Summary Card -->
+      <!-- Summary Card avec Stats et Winner -->
       <mat-card class="summary-card">
         <mat-card-header>
           <mat-card-title>
@@ -17,108 +17,36 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <mat-icon>format_list_numbered</mat-icon>
-              <div class="stat-value">{{ currentSet() }}</div>
-              <div class="stat-label">Manches jouées</div>
-            </div>
-            
-            <div class="stat-item">
-              <mat-icon>group</mat-icon>
-              <div class="stat-value">{{ totalPlayers() }}</div>
-              <div class="stat-label">Joueurs participants</div>
-            </div>
-            
-            <div class="stat-item">
-              <mat-icon>sports_tennis</mat-icon>
-              <div class="stat-value">{{ totalCourts() }}</div>
-              <div class="stat-label">Terrains utilisés</div>
-            </div>
-          </div>
+          <!-- Stats -->
+          <app-game-stats
+            [currentSet]="currentSet()"
+            [totalPlayers]="totalPlayers()"
+            [totalCourts]="totalCourts()"
+          ></app-game-stats>
 
-          @if (winningTeam()) {
-            <div class="winner-section">
-              <mat-divider></mat-divider>
-              <div class="winner-content">
-                <mat-icon class="winner-icon">star</mat-icon>
-                <div class="winner-info">
-                  <div class="winner-label">Grand Gagnant</div>
-                  <div class="winner-name">
-                    {{ winningTeam()?.firstName }} {{ winningTeam()?.lastName }}
-                  </div>
-                  <div class="winner-stats">
-                    <strong>{{ winningTeam()?.totalPoints }}</strong> points • 
-                    <strong>{{ winningTeam()?.wins }}</strong> victoires • 
-                    <strong>{{ winningTeam()?.matchesPlayed }}</strong> matchs
-                  </div>
-                </div>
-              </div>
-            </div>
-          }
+          <!-- Winner -->
+          <app-winner-card [winner]="winningTeam()"></app-winner-card>
         </mat-card-content>
       </mat-card>
 
-      <!-- Rankings Card -->
-      <mat-card class="rankings-card">
-        <mat-card-header>
-          <mat-card-title>
-            <mat-icon>emoji_events</mat-icon>
-            Classement final
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="rankings-list">
-            @for (player of rankings(); track player.id; let i = $index) {
-              <div class="ranking-item" [class.top-3]="i < 3">
-                <div class="rank-position">{{ i + 1 }}</div>
-                <div class="rank-player">
-                  <div class="player-name">{{ player.firstName }} {{ player.lastName }}</div>
-                  <div class="player-stats">
-                    {{ player.matchesPlayed }} matchs • {{ player.wins }} victoires
-                  </div>
-                </div>
-                <div class="rank-points">{{ player.totalPoints }} pts</div>
-              </div>
-            }
-          </div>
-        </mat-card-content>
-      </mat-card>
+      <!-- Rankings -->
+      <app-rankings-list [rankings]="rankings()"></app-rankings-list>
 
-      <!-- Thank You Section -->
-      <div class="thank-you-section">
-        <mat-icon>favorite</mat-icon>
-        <h2>Un grand merci à tous !</h2>
-        <p>
-          Merci d'avoir participé à cette partie de badminton.<br>
-          Nous espérons que vous avez passé un excellent moment tous ensemble !<br>
-          À très vite pour de nouvelles parties ! 🏸
-        </p>
-      </div>
+      <!-- Thank You -->
+      <app-thank-you></app-thank-you>
 
       <!-- Action Buttons -->
-      <div class="action-buttons">
-        <button mat-raised-button color="primary" (click)="exportToPDF()">
-          <mat-icon>picture_as_pdf</mat-icon>
-          Exporter PDF
-        </button>
-
-        <button mat-stroked-button color="warn" (click)="deleteGame()">
-          <mat-icon>delete</mat-icon>
-          Supprimer
-        </button>
-
-        <button mat-stroked-button (click)="backToSetup()">
-          <mat-icon>home</mat-icon>
-          Accueil
-        </button>
-      </div>
+      <app-action-buttons
+        (exportPdf)="onExportPdf()"
+        (deleteGame)="onDeleteGame()"
+        (backToSetup)="onBackToSetup()"
+      ></app-action-buttons>
     } @else {
       <mat-card class="no-data-card">
         <mat-card-content>
           <mat-icon>info</mat-icon>
           <p>Aucune donnée de partie disponible</p>
-          <button mat-raised-button color="primary" (click)="backToSetup()">
+          <button mat-raised-button color="primary" (click)="onBackToSetup()">
             Commencer une partie
           </button>
         </mat-card-content>

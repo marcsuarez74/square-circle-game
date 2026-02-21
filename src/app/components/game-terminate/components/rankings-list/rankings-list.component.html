@@ -1,0 +1,24 @@
+<mat-card class="rankings-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>emoji_events</mat-icon>
+      Classement final
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="rankings-list">
+      @for (player of rankings(); track player.id; let i = $index) {
+        <div class="ranking-item" [class.top-3]="i < 3">
+          <div class="rank-position">{{ i + 1 }}</div>
+          <div class="rank-player">
+            <div class="player-name">{{ player.firstName }} {{ player.lastName }}</div>
+            <div class="player-stats">
+              {{ player.matchesPlayed }} matchs • {{ player.wins }} victoires
+            </div>
+          </div>
+          <div class="rank-points">{{ player.totalPoints }} pts</div>
+        </div>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,19 @@
+@if (winner()) {
+  <div class="winner-section">
+    <mat-divider></mat-divider>
+    <div class="winner-content">
+      <mat-icon class="winner-icon">star</mat-icon>
+      <div class="winner-info">
+        <div class="winner-label">Grand Gagnant</div>
+        <div class="winner-name">
+          {{ winner()?.firstName }} {{ winner()?.lastName }}
+        </div>
+        <div class="winner-stats">
+          <strong>{{ winner()?.totalPoints }}</strong> points • 
+          <strong>{{ winner()?.wins }}</strong> victoires • 
+          <strong>{{ winner()?.matchesPlayed }}</strong> matchs
+        </div>
+      </div>
+    </div>
+  </div>
+}

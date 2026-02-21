@@ -1,0 +1,16 @@
+<div class="action-buttons">
+  <button mat-raised-button color="primary" (click)="exportPdf.emit()">
+    <mat-icon>picture_as_pdf</mat-icon>
+    Exporter PDF
+  </button>
+
+  <button mat-stroked-button color="warn" (click)="deleteGame.emit()">
+    <mat-icon>delete</mat-icon>
+    Supprimer
+  </button>
+
+  <button mat-stroked-button (click)="backToSetup.emit()">
+    <mat-icon>home</mat-icon>
+    Accueil
+  </button>
+</div>

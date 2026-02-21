@@ -10,10 +10,30 @@ import { GameStore } from '../../store/game.store';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+// Dumb Components
+import {
+  GameStatsComponent,
+  WinnerCardComponent,
+  RankingsListComponent,
+  ActionButtonsComponent,
+  ThankYouComponent,
+} from './components';
+
 @Component({
   selector: 'app-game-terminate',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatDividerModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
+    GameStatsComponent,
+    WinnerCardComponent,
+    RankingsListComponent,
+    ActionButtonsComponent,
+    ThankYouComponent,
+  ],
   templateUrl: './game-terminate.html',
   styleUrl: './game-terminate.scss',
 })
@@ -23,29 +43,20 @@ export class GameTerminate {
   private store = inject(GameStore);
 
   // Signals from store
-  gameState = this.store.gameState;
-  players = this.store.players;
-  matchScores = this.store.matchScores;
-  currentSet = this.store.currentSet;
+  protected gameState = this.store.gameState;
+  protected players = this.store.players;
+  protected currentSet = this.store.currentSet;
 
   // Computed values
-  rankings = computed(() => {
-    const allPlayers = this.players();
-    return [...allPlayers].sort((a, b) => b.totalPoints - a.totalPoints);
+  protected rankings = computed(() => {
+    return [...this.players()].sort((a, b) => b.totalPoints - a.totalPoints);
   });
 
-  totalCourts = computed(() => this.gameState()?.courts?.length || 0);
-  totalPlayers = computed(() => this.players()?.length || 0);
-  totalMatches = computed(() => {
-    const state = this.gameState();
-    if (!state) return 0;
-    return state.courts.reduce((acc, court) => acc + court.players.reduce((pAcc, p) => pAcc + p.matchesPlayed, 0), 0) / 4;
-  });
-
-  winningTeam = computed(() => {
+  protected totalCourts = computed(() => this.gameState()?.courts?.length || 0);
+  protected totalPlayers = computed(() => this.players().length);
+  protected winningTeam = computed(() => {
     const rankings = this.rankings();
-    if (rankings.length === 0) return null;
-    return rankings[0];
+    return rankings.length > 0 ? rankings[0] : null;
   });
 
   constructor() {
@@ -57,7 +68,9 @@ export class GameTerminate {
     });
   }
 
-  deleteGame(): void {
+  // ===== Event Handlers =====
+
+  onDeleteGame(): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette partie ? Cette action est irréversible.')) {
       this.store.clearStorage();
       this.showMessage('Partie supprimée avec succès');
@@ -65,7 +78,7 @@ export class GameTerminate {
     }
   }
 
-  exportToPDF(): void {
+  onExportPdf(): void {
     const doc = new jsPDF();
     const state = this.gameState();
     const players = this.players();
@@ -76,25 +89,33 @@ export class GameTerminate {
       return;
     }
 
-    // Title
+    // Generate PDF
+    this.generatePDF(doc, state, rankings);
+    this.showMessage('PDF exporté avec succès');
+  }
+
+  onBackToSetup(): void {
+    this.router.navigate(['/game-setup']);
+  }
+
+  // ===== Private Methods =====
+
+  private generatePDF(doc: jsPDF, state: any, rankings: any[]): void {
     doc.setFontSize(24);
     doc.text('Ronde des Carrés - Récapitulatif', 14, 20);
 
-    // Date
     doc.setFontSize(12);
     doc.text(`Date: ${new Date().toLocaleDateString('fr-FR')}`, 14, 30);
 
-    // Game Info
     doc.setFontSize(14);
     doc.text('Informations de la partie', 14, 45);
     
     doc.setFontSize(11);
     doc.text(`• Nombre de manches: ${state.currentSet}`, 14, 55);
-    doc.text(`• Nombre de joueurs: ${players.length}`, 14, 62);
+    doc.text(`• Nombre de joueurs: ${rankings.length}`, 14, 62);
     doc.text(`• Nombre de terrains: ${state.courts.length}`, 14, 69);
     doc.text(`• Temps restant: ${this.formatTime(state.remainingTime)}`, 14, 76);
 
-    // Rankings Table
     doc.setFontSize(14);
     doc.text('Classement final', 14, 95);
 
@@ -115,20 +136,13 @@ export class GameTerminate {
       headStyles: { fillColor: [56, 189, 248] },
     });
 
-    // Thank you message
     const finalY = (doc as any).lastAutoTable.finalY + 20;
     doc.setFontSize(12);
     doc.text('Merci à tous les joueurs pour leur participation !', 14, finalY);
     doc.setFontSize(10);
     doc.text('Ronde des Carrés - Badminton', 14, finalY + 10);
 
-    // Save PDF
     doc.save(`ronde-des-carres-recapitulatif-${new Date().toISOString().split('T')[0]}.pdf`);
-    this.showMessage('PDF exporté avec succès');
-  }
-
-  backToSetup(): void {
-    this.router.navigate(['/game-setup']);
   }
 
   private formatTime(seconds: number): string {
