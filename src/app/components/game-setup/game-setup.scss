@@ -57,9 +57,19 @@
   top: 88px;
 
   @media (max-width: 968px) {
-    order: 1; // En mobile, le recap va en BAS (après le contenu principal)
+    order: 2; // En mobile, le recap va en BAS (après le contenu principal qui est order: 1)
     position: static;
     align-self: auto;
+  }
+}
+
+.main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (max-width: 968px) {
+    order: 1; // Contenu principal en premier
   }
 }
 
