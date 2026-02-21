@@ -94,6 +94,10 @@ export class GameTerminate {
     this.showMessage('PDF exporté avec succès');
   }
 
+  onBackToSetup(): void {
+    this.router.navigate(['/game-setup']);
+  }
+
   onNewGame(): void {
     // Garder les joueurs mais réinitialiser tout le reste
     const currentPlayers = this.players();
