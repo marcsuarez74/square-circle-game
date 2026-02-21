@@ -149,20 +149,24 @@ npm run lint
 ## Fonctionnalités techniques
 
 ### Persistance
+
 - Sauvegarde automatique toutes les 10 secondes
 - Restauration au refresh de page
 - Durée de vie : 24h
 
 ### Routing
+
 - Hash location pour GitHub Pages
 - Redirection automatique si pas de partie active
 
 ### Responsive
+
 - **Desktop** : Layout 2 colonnes avec sidebar sticky
 - **Mobile** : Layout 1 colonne, recap en bas
 - **Tablette** : Adaptation automatique
 
 ### Performance
+
 - Signals Angular pour change detection optimisé
 - Lazy loading des composants
 - Mémoization des calculs coûteux
