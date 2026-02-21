@@ -1,6 +1,6 @@
 <div class="terminate-container">
   <div class="terminate-content">
-    <!-- Header -->
+    <!-- Header avec animations -->
     <header class="terminate-header">
       <mat-icon class="trophy-icon">emoji_events</mat-icon>
       <h1>Partie Terminée !</h1>
@@ -19,7 +19,7 @@
         <mat-card-content>
           <div class="stats-grid">
             <div class="stat-item">
-              <mat-icon>sports_tennis</mat-icon>
+              <mat-icon>format_list_numbered</mat-icon>
               <div class="stat-value">{{ currentSet() }}</div>
               <div class="stat-label">Manches jouées</div>
             </div>
@@ -31,7 +31,7 @@
             </div>
             
             <div class="stat-item">
-              <mat-icon>timer</mat-icon>
+              <mat-icon>sports_tennis</mat-icon>
               <div class="stat-value">{{ totalCourts() }}</div>
               <div class="stat-label">Terrains utilisés</div>
             </div>
@@ -43,12 +43,14 @@
               <div class="winner-content">
                 <mat-icon class="winner-icon">star</mat-icon>
                 <div class="winner-info">
-                  <div class="winner-label">Gagnant</div>
+                  <div class="winner-label">Grand Gagnant</div>
                   <div class="winner-name">
                     {{ winningTeam()?.firstName }} {{ winningTeam()?.lastName }}
                   </div>
                   <div class="winner-stats">
-                    {{ winningTeam()?.totalPoints }} points • {{ winningTeam()?.wins }} victoires
+                    <strong>{{ winningTeam()?.totalPoints }}</strong> points • 
+                    <strong>{{ winningTeam()?.wins }}</strong> victoires • 
+                    <strong>{{ winningTeam()?.matchesPlayed }}</strong> matchs
                   </div>
                 </div>
               </div>
@@ -61,7 +63,7 @@
       <mat-card class="rankings-card">
         <mat-card-header>
           <mat-card-title>
-            <mat-icon>format_list_numbered</mat-icon>
+            <mat-icon>emoji_events</mat-icon>
             Classement final
           </mat-card-title>
         </mat-card-header>
@@ -76,7 +78,7 @@
                     {{ player.matchesPlayed }} matchs • {{ player.wins }} victoires
                   </div>
                 </div>
-                <div class="rank-points">{{ player.totalPoints }}</div>
+                <div class="rank-points">{{ player.totalPoints }} pts</div>
               </div>
             }
           </div>
@@ -86,10 +88,11 @@
       <!-- Thank You Section -->
       <div class="thank-you-section">
         <mat-icon>favorite</mat-icon>
-        <h2>Merci à tous !</h2>
+        <h2>Un grand merci à tous !</h2>
         <p>
-          Nous espérons que vous avez apprécié cette partie de badminton.
-          À bientôt pour de nouvelles parties !
+          Merci d'avoir participé à cette partie de badminton.<br>
+          Nous espérons que vous avez passé un excellent moment tous ensemble !<br>
+          À très vite pour de nouvelles parties ! 🏸
         </p>
       </div>
 
@@ -97,17 +100,17 @@
       <div class="action-buttons">
         <button mat-raised-button color="primary" (click)="exportToPDF()">
           <mat-icon>picture_as_pdf</mat-icon>
-          Exporter en PDF
+          Exporter PDF
         </button>
 
         <button mat-stroked-button color="warn" (click)="deleteGame()">
           <mat-icon>delete</mat-icon>
-          Supprimer la partie
+          Supprimer
         </button>
 
         <button mat-stroked-button (click)="backToSetup()">
           <mat-icon>home</mat-icon>
-          Retour à l'accueil
+          Accueil
         </button>
       </div>
     } @else {
@@ -116,7 +119,7 @@
           <mat-icon>info</mat-icon>
           <p>Aucune donnée de partie disponible</p>
           <button mat-raised-button color="primary" (click)="backToSetup()">
-            Commencer une nouvelle partie
+            Commencer une partie
           </button>
         </mat-card-content>
       </mat-card>
